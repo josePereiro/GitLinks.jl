@@ -1,6 +1,6 @@
-using GitLink
+using GitLinks
 using Test
 
-@testset "GitLink.jl" begin
+@testset "GitLinks.jl" begin
     # Write your tests here.
 end

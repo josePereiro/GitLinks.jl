@@ -1,7 +1,10 @@
-name = "GitLink"
+name = "GitLinks"
 uuid = "e5655290-0136-40fd-b997-9e22755203bc"
 authors = ["josePereiro <jose.pereiro.lab@gmail.com> and contributors"]
 version = "0.1.0"
+
+[deps]
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
 julia = "1.6"
