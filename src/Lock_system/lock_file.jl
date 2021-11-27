@@ -4,11 +4,12 @@ _lock_file(gl::GitLink) = joinpath(_local_state_dir(gl), _LOCK_FILE_NAME)
 const _LOCK_FILE_KEY = :lock_file_key
 lock_file(gl::GitLink) = _gl_dat_fun(gl, _LOCK_FILE_KEY, _lock_file)
 
-const _LOCK_SAFE_TIME = 0.2
-const _LOCK_WAIT_TIME = 1.0
-const _LOCK_VALID_TIME = 30.0
+const _LOCK_DFT_SAFE_TIME = 0.2
+const _LOCK_DFT_WAIT_TIME = 1.0
+const _LOCK_DFT_VALID_TIME = 30.0
+const _LOCK_DFT_TIME_OUT = 0.0
 
-function _write_lock_file(lf::String; lid::String = rand_str(), vtime::Float64 = _LOCK_VALID_TIME)
+function _write_lock_file(lf::String; lid::String = rand_str(), vtime::Float64 = _LOCK_DFT_VALID_TIME)
     _mkdir(lf)
     ttag = time() + vtime
     write(lf, string(lid, " ", ttag))
@@ -50,8 +51,10 @@ function release_lock(lf::String, lid::String)
     return true
 end
 
-function _get_lock(lf::String; vtime = _LOCK_VALID_TIME)
-    lid = rand_str()
+function _get_lock(lf::String; 
+        vtime = _LOCK_DFT_VALID_TIME, 
+        lid = rand_str()
+    )
     if isfile(lf)
         curr_lid, ttag = _read_lock_file(lf)
         _isvalid = _is_valid_ttag(ttag)
@@ -71,16 +74,38 @@ function _get_lock(lf::String; vtime = _LOCK_VALID_TIME)
     return _write_lock_file(lf; lid, vtime)
 end
 
-function get_lock(lf::String; vtime = _LOCK_VALID_TIME, wt = _LOCK_WAIT_TIME, tout = 0.0)
+function get_lock(lf::String; 
+        vtime = _LOCK_DFT_VALID_TIME, 
+        wt = _LOCK_DFT_WAIT_TIME, 
+        tout = _LOCK_DFT_TIME_OUT, 
+        lid = rand_str()
+    )
+
     if tout > 0.0
         t0 = time()
         while true
-            lid, ttag = _get_lock(lf; vtime)
+            lid, ttag = _get_lock(lf; vtime, lid)
             !isempty(lid) && return (lid, ttag)
             (time() - t0) > tout && return ("", ttag)
             sleep(wt)
         end
     else
-        return _get_lock(lf; vtime)
+        return _get_lock(lf; vtime, lid)
+    end
+end
+
+import Base.lock
+function lock(f::Function, gl::GitLink;
+        vtime = _LOCK_DFT_VALID_TIME, 
+        wt = _LOCK_DFT_WAIT_TIME, 
+        tout = _LOCK_DFT_TIME_OUT,
+        lfile = lock_file(gl), 
+        lid = rand_str()
+    )
+    try
+        lid, ttag = get_lock(lfile; vtime, wt, tout)
+        f()
+    finally
+        release_lock(lfile, lid)
     end
 end

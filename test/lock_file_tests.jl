@@ -47,6 +47,16 @@ let
     @test !GitLinks.has_lock(lf, lid4)
     @test !isfile(lf)
 
+    # base.lock
+    lock(gl) do
+        # all this time the lock is taken
+        for it in 1:10
+            @test !GitLinks.has_lock(lf, "Not a lock id")
+            sleep(0.2)
+        end
+    end
+    @test !isfile(lf)
+
     # clear
     rm(root; recursive = true, force = true)
 end
