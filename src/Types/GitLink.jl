@@ -24,3 +24,4 @@ _gl_dat_fun(gl, key, _fun) = haskey(gl.dat, key) ?
     gl.dat[key] :
     gl.dat[key] = _fun(gl)
 
+remote_url(gl::GitLink) = gl.remote_url

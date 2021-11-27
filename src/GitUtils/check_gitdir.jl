@@ -1,4 +1,4 @@
-function _check_reporoot(reporoot)
+function _check_gitdir(reporoot)
     !isdir(reporoot) && return false
     reporoot1 = _run("git -C $(reporoot) rev-parse --git-dir 2>&1"; verbose = false, ignorestatus = true)
     reporoot1 = strip(reporoot1)
