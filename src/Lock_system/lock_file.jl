@@ -9,7 +9,10 @@ const _LOCK_DFT_WAIT_TIME = 1.0
 const _LOCK_DFT_VALID_TIME = 30.0
 const _LOCK_DFT_TIME_OUT = 0.0
 
-function _write_lock_file(lf::String; lid::String = rand_str(), vtime::Float64 = _LOCK_DFT_VALID_TIME)
+function _write_lock_file(lf::String; 
+        lid::String = rand_str(), 
+        vtime::Float64 = _LOCK_DFT_VALID_TIME
+    )
     _mkdir(lf)
     ttag = time() + vtime
     write(lf, string(lid, " ", ttag))
