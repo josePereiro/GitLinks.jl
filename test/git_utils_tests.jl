@@ -2,8 +2,16 @@ let
     upstream_repo = ""
     local_root = ""
     try
+
+        println("\n", "-"^60, "\n")
+        println("Testing git utils")
+        println("-"^60, "\n")
+
         # upstream
         url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose = false)
+        @show url
+        @show upstream_repo
+        @assert isdir(upstream_repo)
 
         @test !isempty(GitLinks._check_remote(url))
         @test !isempty(GitLinks._curr_hash(upstream_repo))
@@ -16,11 +24,11 @@ let
         # local repo
         local_root = tempname()
         GitLinks._rm(local_root)
+        @show local_root
+        
         gl = GitLinks.GitLink(local_root, url)
         local_repo = GitLinks.repo_dir(gl)
         local_repo_git = joinpath(local_repo, ".git")
-        # @show local_repo
-        # @show local_repo_git
         
         # hard pull
         @test !isdir(local_root)
@@ -56,11 +64,11 @@ let
         println("\n", "-"^60, "\n")
         println("Before nuking")
         run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
-        println("\n", "-"^60, "\n")
 
         # nuke
-        upsize2 = GitLinks._foldersize(upstream_repo)
-        upsize3 = GitLinks._foldersize(local_root)
+        # TODO: test that nuking actually reduce size
+        # upsize2 = GitLinks._foldersize(upstream_repo)
+        # upsize3 = GitLinks._foldersize(local_root)
 
         nuke_ok = GitLinks.nuke_remote(gl; verbose = false)
         @test nuke_ok
@@ -71,7 +79,6 @@ let
         @test isdir(local_root)
         @test isdir(local_repo_git)
 
-        # TODO: test that nuking actually reduce size
         # upsize4 = GitLinks._foldersize(local_root)
         # upsize5 = GitLinks._foldersize(upstream_repo)
         # GitLinks._run("git -C $(upstream_repo) gc")
@@ -82,11 +89,10 @@ let
         # @show upsize3 upsize4
         # @test upsize2 < upsize1
         
-
         println("\n", "-"^60, "\n")
         println("After nuking")
         run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
-        println("\n", "-"^60, "\n")
+        println("\n"^5)
 
 
     finally
