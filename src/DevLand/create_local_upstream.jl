@@ -1,4 +1,4 @@
-function _create_local_upstream(rootdir; verbose = true)
+function _create_local_upstream(rootdir = tempname(); verbose = true)
     
     # home dirs
     upstream_repo = joinpath(rootdir, "upstream_repo")

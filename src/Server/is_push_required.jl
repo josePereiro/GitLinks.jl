@@ -1,0 +1,1 @@
+_is_push_required(gl::GitLink) = !_is_stage_token_sync(gl)

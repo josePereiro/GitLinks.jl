@@ -2,7 +2,7 @@
 const _LOCK_FILE_NAME = ".gl.lock"
 lock_file(gl::GitLink) = joinpath(local_state_dir(gl), _LOCK_FILE_NAME)
 
-# TODO: Add config capabilities
+# TODO: Connect with GitLink config
 const _LOCK_DFT_SAFE_TIME = 0.2
 const _LOCK_DFT_WAIT_TIME = 1.0
 const _LOCK_DFT_VALID_TIME = 30.0
@@ -52,6 +52,7 @@ function release_lock(lf::String, lid::String)
     rm(lf; force = true)
     return true
 end
+release_lock(gl::GitLink, lid::String) = release_lock(lock_file(gl), lid)
 
 function _get_lock(lf::String; 
         vtime = _LOCK_DFT_VALID_TIME, 

@@ -15,7 +15,8 @@ function hard_pull(gl::GitLink; verbose = false, clearwd = true)
     # check remote
     rhash = _check_remote(url)
     isempty(rhash) && return false
-
+    
+    
     # clear wd
     clearwd && _clear_wd(rootdir)
 

@@ -21,3 +21,8 @@ function _foldersize(dir)
     end
     return size
 end
+
+function _cp(src::AbstractString, dst::AbstractString)
+    try; cp(src, dst; force = true)
+    catch err; end
+end

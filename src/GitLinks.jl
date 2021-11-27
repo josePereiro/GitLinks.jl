@@ -14,6 +14,7 @@ include("GitUtils/config.jl")
 include("GitUtils/curr_branch.jl")
 include("GitUtils/curr_hash.jl")
 include("GitUtils/hard_pull.jl")
+include("GitUtils/is_up_to_day.jl")
 include("GitUtils/nuke_remote.jl")
 include("GitUtils/ready_to_push.jl")
 include("GitUtils/soft_push.jl")
@@ -26,6 +27,10 @@ include("Lock_system/lock_file.jl")
 
 include("DevLand/create_local_upstream.jl")
 
+include("Server/loop_frec.jl")
+include("Server/is_pull_required.jl")
+include("Server/is_push_required.jl")
+include("Server/stage.jl")
 include("Server/sync_loop.jl")
 
 end

@@ -5,3 +5,4 @@ function _curr_hash(repodir)
     m = match(_CURR_HASH_OK_REGEX, out)
     isnothing(m) ? "" : m[:hash]
 end
+_curr_hash(gl::GitLink) = _curr_hash(repo_dir(gl))

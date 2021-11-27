@@ -28,4 +28,7 @@ import Base.get
 get(f::Function, gl::GitLink, key) = get(f, gl.dat, key)
 get(gl::GitLink, key, val) = get(gl.dat, key, val)
 
+set!(gl::GitLink, key, val) = (gl.dat[key] = val)
+set!(f::Function, gl::GitLink, key) = (gl.dat[key] = f())
+
 remote_url(gl::GitLink) = gl.remote_url
