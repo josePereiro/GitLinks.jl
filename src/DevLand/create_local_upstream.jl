@@ -8,8 +8,6 @@ function _create_local_upstream(rootdir; verbose = true)
     verbose && @info("setting up upstream")
     url = _url_from_file(upstream_repo)
     _run("git -C $(upstream_repo) --bare init 2>&1"; verbose)
-    _run("git -C $(upstream_repo) config user.name jonhdoe 2>&1"; verbose)
-    _run("git -C $(upstream_repo) config user.email bla@gmail.com 2>&1"; verbose)
     verbose && println(read(joinpath(upstream_repo, "config"), String))
     verbose && println("\n")
     
@@ -19,8 +17,11 @@ function _create_local_upstream(rootdir; verbose = true)
     _run("git clone $(url) $(cdir) 2>&1"; verbose)
     dumpfile = joinpath(cdir, "README.md")
     write(dumpfile, "# TEST")
-    _run("git -C $(cdir) add $(dumpfile) 2>&1"; verbose)
-    _run("git -C $(cdir) commit -m 'First commit' 2>&1"; verbose)
+    _run("git -C $(cdir) add -A 2>&1"; verbose)
+    commit_msg = "Test upstream created"
+    user_name = get_global_config("user.name", "GitLink")
+    user_email = get_global_config("user.email", "fake@email.com")
+    _run("git -C $(cdir) -c user.name='$(user_name)' -c user.email='$(user_email)' commit -am '$(commit_msg)' 2>&1"; verbose)
     _run("git -C $(cdir) push 2>&1"; verbose)
 
     # rename branch
@@ -29,7 +30,7 @@ function _create_local_upstream(rootdir; verbose = true)
     verbose && println("\n", "-"^60, "\n")
     _run("git -C $(upstream_repo) --no-pager log 2>&1"; verbose)
 
-    rm(cdir; recursive = true, force = true)
+    _rm(cdir)
 
     return (;url, upstream_repo)
 end

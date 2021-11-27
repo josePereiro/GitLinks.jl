@@ -19,7 +19,7 @@ function gw_create_devland(;
     clear_scripts && rm(client_script; force = true)
     write(client_script, 
         join([
-            "using GitWorkers", 
+            "using GitLinks", 
             "",
             "## ---------------------------------------------------------------",
             "# cmd for run the server",
@@ -27,7 +27,7 @@ function gw_create_devland(;
             "",
             "## ---------------------------------------------------------------",
             "# run to reset all",
-            "# GitWorkers.gw_create_devland()",
+            "# GitLinks.gw_create_devland()",
             "",
             "## ---------------------------------------------------------------",
             "gw_setup_gitworker(;",
@@ -41,7 +41,7 @@ function gw_create_devland(;
     clear_scripts && rm(server_script; force = true)
     write(server_script, 
         join([
-            "using GitWorkers", 
+            "using GitLinks", 
             "",
             "## ---------------------------------------------------------------",
             "run_gitworker_server(;",

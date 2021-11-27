@@ -6,8 +6,6 @@ function _up_push_dummy(gl::GitLink)
 end
 
 function soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())")
-
-    ignorestatus = true
     
     # repo info
     rootdir = repo_dir(gl)
@@ -27,12 +25,12 @@ function soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())")
     # soft push
     _up_push_dummy(gl) # Update push dummy (always push)
     _rm(joinpath(rootdir, ".gitignore")) # avoid interference
-    _run("git -C $(rootdir) add -A 2>&1"; verbose, ignorestatus)
-    _run("git -C $(rootdir) status 2>&1"; verbose, ignorestatus)
-    user_name = get_global_config("user.email", "GitWorker")
+    _run("git -C $(rootdir) add -A 2>&1"; verbose)
+    _run("git -C $(rootdir) status 2>&1"; verbose)
+    user_name = get_global_config("user.name", "GitLink")
     user_email = get_global_config("user.email", "fake@email.com")
-    _run("git -C $(rootdir) -c user.name='$(user_name)' -c user.email='$(user_email)' commit -am '$(commit_msg)' 2>&1"; verbose, ignorestatus)
-    _run("git -C $(rootdir) push 2>&1"; verbose, ignorestatus)
+    _run("git -C $(rootdir) -c user.name='$(user_name)' -c user.email='$(user_email)' commit -am '$(commit_msg)' 2>&1"; verbose)
+    _run("git -C $(rootdir) push 2>&1"; verbose)
 
     # check success
     rhash1 = _check_remote(url)

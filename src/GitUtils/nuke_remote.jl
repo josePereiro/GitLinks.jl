@@ -21,7 +21,7 @@ function nuke_remote(gl::GitLink;
     _up_push_dummy(gl) # Update push dummy (always push)
     _run("git -C $(gl_repo) add -A 2>&1"; verbose, ignorestatus)
     _run("git -C $(gl_repo) status 2>&1"; verbose, ignorestatus)
-    user_name = get_global_config("user.email", "GitWorker")
+    user_name = get_global_config("user.email", "GitLink")
     user_email = get_global_config("user.email", "fake@email.com")
     _run("git -C $(gl_repo) -c user.name='$(user_name)' -c user.email='$(user_email)' commit -am 'Boooom at $(time())' 2>&1"; verbose, ignorestatus)
     

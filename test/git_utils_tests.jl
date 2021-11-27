@@ -8,7 +8,7 @@ let
         println("-"^60, "\n")
 
         # upstream
-        url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose = false)
+        url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose = true)
         @show url
         @show upstream_repo
         @assert isdir(upstream_repo)
@@ -92,7 +92,7 @@ let
         println("\n", "-"^60, "\n")
         println("After nuking")
         run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
-        println("\n"^5)
+        println("\n"^3)
 
 
     finally

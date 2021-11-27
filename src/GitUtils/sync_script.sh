@@ -25,7 +25,7 @@ sh_startup_file="${sh_repodir}/sync_startup"
 git_user_name="$(git config user.name)"
 git_user_email="$(git config user.email)"
 if [ -z "${git_user_name}" ]; then
-	git_user_name="GitWorker"
+	git_user_name="GitLink"
 fi
 if [ -z "${git_user_email}" ]; then
 	git_user_email="fake@email.com"
