@@ -13,3 +13,11 @@ function _rm(path)
     try; rm(path; recursive = true, force = true)
     catch err; end
 end
+
+function _foldersize(dir)
+    size = 0
+    for (root, _, files) in walkdir(dir)
+        size += sum(filesize.(joinpath.(root, files)))
+    end
+    return size
+end
