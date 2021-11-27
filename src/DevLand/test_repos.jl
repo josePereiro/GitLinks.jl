@@ -17,7 +17,7 @@ function _create_test_repos(testdir)
     println("\n")
 
     # setup gitwr
-    url = string("file://", upstream_repo)
+    url = _url_from_file(upstream_repo)
     @info("setting up client")
     gw_setup_gitworker(;sys_root = client_root, url)
     println("\n")

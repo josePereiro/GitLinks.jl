@@ -2,8 +2,9 @@ module GitLinks
 
 import TOML
 
-# include("GitUtils/check_remote.jl")
-# include("GitUtils/curr_hash.jl")
+include("GitUtils/check_remote.jl")
+include("GitUtils/curr_hash.jl")
+include("GitUtils/url_from_file.jl")
 
 include("Utils/rand_str.jl")
 include("Utils/toml_utils.jl")
