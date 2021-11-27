@@ -1,9 +1,8 @@
 # lock_file
 const _LOCK_FILE_NAME = ".gl.lock"
-_lock_file(gl::GitLink) = joinpath(_local_state_dir(gl), _LOCK_FILE_NAME)
-const _LOCK_FILE_KEY = :lock_file_key
-lock_file(gl::GitLink) = _gl_dat_fun(gl, _LOCK_FILE_KEY, _lock_file)
+lock_file(gl::GitLink) = joinpath(local_state_dir(gl), _LOCK_FILE_NAME)
 
+# TODO: Add config capabilities
 const _LOCK_DFT_SAFE_TIME = 0.2
 const _LOCK_DFT_WAIT_TIME = 1.0
 const _LOCK_DFT_VALID_TIME = 30.0
@@ -96,6 +95,7 @@ function get_lock(lf::String;
         return _get_lock(lf; vtime, lid)
     end
 end
+get_lock(gl::GitLink; kwargs...) = get_lock(lock_file(gl); kwargs...)
 
 import Base.lock
 function lock(f::Function, gl::GitLink;

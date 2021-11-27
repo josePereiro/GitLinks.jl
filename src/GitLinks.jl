@@ -26,4 +26,6 @@ include("Lock_system/lock_file.jl")
 
 include("DevLand/create_local_upstream.jl")
 
+include("Server/sync_loop.jl")
+
 end

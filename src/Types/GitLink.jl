@@ -20,8 +20,12 @@ function Base.show(io::IO, gl::GitLink)
     println(io, ")")
 end
 
-_gl_dat_fun(gl, key, _fun) = haskey(gl.dat, key) ?
-    gl.dat[key] :
-    gl.dat[key] = _fun(gl)
+import Base.get!
+get!(f::Function, gl::GitLink, key) = get!(f, gl.dat, key)
+get!(gl::GitLink, key, val) = get!(gl.dat, key, val)
+
+import Base.get
+get(f::Function, gl::GitLink, key) = get(f, gl.dat, key)
+get(gl::GitLink, key, val) = get(gl.dat, key, val)
 
 remote_url(gl::GitLink) = gl.remote_url
