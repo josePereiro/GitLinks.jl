@@ -21,6 +21,7 @@ function _merge_stage(gl::GitLink)
     end
 end
 
+# TODO: Test this
 """
     stage(gl::GitLink, files::Vector{String}; root::String = "", tout = 60.0)
 
@@ -47,7 +48,14 @@ function stage(gl::GitLink, files::Vector{String};
                 cp(src_file, dest_file; force = true)
             end
         else
-            error("""root != "" not implemented, yet!!!!""")
+            root = abspath(root)
+            sdir = abspath(sdir)
+            for src_file in files
+                src_file = abspath(src_file)
+                dest_file = replace(src_file, root => sdir)
+                _mkdir(dest_file)
+                cp(src_file, dest_file; force = true)
+            end
         end
         _set_stage_token(gl)
         ok_flag = true

@@ -1,14 +1,16 @@
 let
+    verbose = false
     upstream_repo = ""
     local_root = ""
+
     try
 
-        println("\n", "-"^60, "\n")
+        println("\n", "-"^60)
         println("Testing git utils")
         println("-"^60, "\n")
 
         # upstream
-        url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose = true)
+        url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose)
         @show url
         @show upstream_repo
         @assert isdir(upstream_repo)
@@ -32,19 +34,19 @@ let
         
         # hard pull
         @test !isdir(local_root)
-        pull_ok = GitLinks.hard_pull(gl; verbose = false, clearwd = true) # clone
+        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # clone
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
         
-        pull_ok = GitLinks.hard_pull(gl; verbose = false, clearwd = true) # pull
+        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # pull
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
         
         GitLinks._rm(joinpath(local_repo, ".git")) # break repo
         @test !GitLinks._check_gitdir(local_root)
-        pull_ok = GitLinks.hard_pull(gl; verbose = false, clearwd = true) # must recover
+        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # must recover
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
@@ -55,7 +57,7 @@ let
             # create 'big' files
             dummy = joinpath(local_repo, "dummy$it")
             write(dummy, GitLinks.rand_str(1000))
-            push_ok = GitLinks.soft_push(gl; verbose = false)
+            push_ok = GitLinks.soft_push(gl; verbose)
             @test push_ok
         end
         upsize1 = GitLinks._foldersize(upstream_repo)
@@ -65,16 +67,16 @@ let
         println("Before nuking")
         run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
 
-        # nuke
         # TODO: test that nuking actually reduce size
+        # nuke
         # upsize2 = GitLinks._foldersize(upstream_repo)
         # upsize3 = GitLinks._foldersize(local_root)
 
-        nuke_ok = GitLinks.nuke_remote(gl; verbose = false)
+        nuke_ok = GitLinks.nuke_remote(gl; verbose)
         @test nuke_ok
         
         GitLinks._rm(local_root)
-        pull_ok = GitLinks.hard_pull(gl; verbose = false, clearwd = true) # clone again
+        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # clone again
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)

@@ -6,11 +6,13 @@ Returns `true` if the action was succeful.
 """
 function instantiate(gl::GitLink; verbose = true)
 
-    ok_flag = false
-    lock(gl) do
-        # clone
-        ok_flag = hard_pull(gl; verbose, clearwd = true)
-    end
+    # One full iter
+    run_sync_loop(gl::GitLink; 
+        niters = 1, verbose, force = true
+    )
     
-    return ok_flag
+    # check success
+    rhash = _check_remote(remote_url(gl))
+    chash = _curr_hash(repo_dir(gl))
+    return rhash == chash
 end

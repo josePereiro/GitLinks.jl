@@ -3,8 +3,9 @@ const _LOCK_FORCE_TIME = 360.0
 const _LOOP_FREC_FAIL_PENALTY = 5.0
 const _LOOP_FREC_IDLE_PENALTY = 0.5
 
-function sync_loop(gl::GitLink; 
-        niters = typemax(Int), verbose = true
+function run_sync_loop(gl::GitLink; 
+        niters = typemax(Int), verbose = true, 
+        force = false
     )
 
     # Globals
@@ -16,6 +17,10 @@ function sync_loop(gl::GitLink;
 
     for it in 1:niters
         
+        ## ---------------------------------------------------
+        # Stop signal (mainly for dev purposes)
+        _get_stop_signal(gl) && return nothing
+
         ## ---------------------------------------------------
         # NEW ITER
         verbose && println("-"^60)
@@ -40,8 +45,8 @@ function sync_loop(gl::GitLink;
 
         ## ---------------------------------------------------
         # RESOLVE ACTION FlAG
-        pull_flag = _is_pull_required(gl)
-        push_flag = !_is_stage_up_to_day(gl)
+        pull_flag = force || _is_pull_required(gl)
+        push_flag = force || !_is_stage_up_to_day(gl)
         doloop = pull_flag || push_flag
         if !doloop # Handle idle
             add_loop_frec!(gl, _LOOP_FREC_IDLE_PENALTY)
@@ -69,11 +74,6 @@ function sync_loop(gl::GitLink;
             ## ---------------------------------------------------
             # MERGE STAGE
             _merge_stage(gl)
-
-            ## ---------------------------------------------------
-            @info("Stage merged")
-            println.(readdir(GitLinks.repo_dir(gl)))
-            println()    
 
             ## ---------------------------------------------------
             # SOFT PUSH
