@@ -1,54 +1,35 @@
-const _MAIN_BRANCH_NAME = "main"
-const _REMOTE_MAIN_BRANCH_NAME = "origin/main"
 const _REMOTE_NAME = "origin"
 
+function _get_remote_url(repodir::String)
+    cmd_str = "git -C $(repodir) remote get-url $(_REMOTE_NAME) 2>&1"
+    out = _run(cmd_str; verbose = false, ignorestatus = true)
+    return string(strip(out))
+end
+
 #=
-GitLink demands:
-- An remote named 'origin'
-- Current branch to be named 'main'
+A GitLink repo demands:
+- A remote named 'origin' (that's it!!!)
 =#
 function _format_repo!(repodir::String, url::String; verbose = false)
     ignorestatus = true
 
     # check remote
-    remotes = _curr_remotes(repodir)
-    @show remotes
-    if !(_REMOTE_NAME in remotes) 
+    curr_url = _get_remote_url(repodir)
+    if curr_url != url
         # reset remote
         _run("git -C $(repodir) remote remove $(_REMOTE_NAME) 2>&1"; verbose, ignorestatus)
         _run("git -C $(repodir) remote add $(_REMOTE_NAME) $(url) 2>&1"; verbose, ignorestatus)
 
-        remotes = _curr_remotes(repodir)
-        @show remotes
-        !(_REMOTE_NAME in remotes) && return false
+        cbranch = _curr_branch(repodir)
+        _run("git -C $(repodir) branch --unset-upstream 2>&1"; verbose, ignorestatus)
+        _run("git -C $(repodir) branch --set-upstream-to $(_REMOTE_NAME) $(cbranch) 2>&1"; verbose, ignorestatus)
+
+        curr_url = _get_remote_url(repodir)
+        return curr_url == url
     end
-
-    cbranch = _curr_branch(repodir)
-    @show cbranch
-    if cbranch != _MAIN_BRANCH_NAME
-
-        # fetch
-        _run("git -C $(repodir) fetch 2>&1"; verbose, ignorestatus)
-        _run("git -C $(repodir) reset --hard FETCH_HEAD 2>&1"; verbose, ignorestatus)
-
-        # rename branch
-        _run("git -C $(repodir) branch -m $(cbranch) $(_MAIN_BRANCH_NAME) 2>&1"; verbose, ignorestatus)
-        
-        # try to delete on remote
-        _run("git -C $(repodir) push $(_REMOTE_NAME) --delete $(cbranch) 2>&1"; verbose, ignorestatus)
-        
-        # try to push force
-        _run("git -C $(repodir) branch --set-upstream $(_MAIN_BRANCH_NAME) $(_REMOTE_MAIN_BRANCH_NAME) 2>&1"; verbose, ignorestatus)
-        _run("git -C $(repodir) push --force 2>&1"; verbose, ignorestatus)
-
-        # check success
-        chash = _HEAD_hash(repodir)
-        rhash = _remote_HEAD_hash(url)
-        (isempty(chash) || rhash != chash) && return false
-
-    end
-
+    
     return true
+    
 end
 
 _format_repo!(gl::GitLink; verbose = false) = _format_repo!(repo_dir(gl), remote_url(gl); verbose)

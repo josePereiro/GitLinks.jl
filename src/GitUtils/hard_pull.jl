@@ -16,8 +16,8 @@ function hard_pull(gl::GitLink; verbose = false, clearwd = true)
     rhash = _remote_HEAD_hash(url)
     isempty(rhash) && return false
 
-    # # enforce repo format (lazy method)
-    # _format_repo!(gl_repo, url; verbose) || return false
+    # enforce repo format (lazy method)
+    _format_repo!(gl_repo, url; verbose)
 
     # clear wd
     clearwd && _clear_wd(gl_repo)

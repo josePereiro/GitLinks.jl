@@ -15,8 +15,8 @@ function soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())")
     rhash0 = _remote_HEAD_hash(url)
     isempty(rhash0) && return false
 
-    # # enforce repo format (lazy method)
-    # _format_repo!(gl_repo, url; verbose) || return false
+    # enforce repo format (lazy method)
+    _format_repo!(gl_repo, url; verbose)
 
     # check it is sync
     chash0 = _HEAD_hash(gl_repo)

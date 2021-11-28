@@ -18,12 +18,14 @@ function ping(gl::GitLink;
     ping_t = time()
     ping_count = 0
 
+    client_tout = tout + min(tout * 0.5, 15.0)
+
     try
         @info("Waiting for response...", )
 
         while true
             for _ in 1:3
-                if (time() - tot_t) > 15.0 + tout 
+                if (time() - tot_t) > client_tout 
                     tot_time = round(time() - tot_t; sigdigits = 3)
                     @info("Time out, total time: $(tot_time)(s)")
                     return ping_count > 0

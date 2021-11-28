@@ -15,7 +15,10 @@ let
 
         ## ------------------------------------------------------------
         # Remote
-        url, upstream_repo = GitLinks._create_local_upstream(;verbose)
+        url, upstream_repo = GitLinks._create_local_upstream(;
+            # branch_name = "master", # This will force a repo formatting
+            verbose
+        )
 
         ## ------------------------------------------------------------
         # Server
@@ -45,7 +48,6 @@ let
             println("\n", "-"^60)
             @info("stage")
             @test sdir == GitLinks.stage_dir(client_gl)
-            @show sdir
             staged_dummy = joinpath(sdir, dummy_name)
             write(staged_dummy, rand())
             stage_test = true
@@ -57,7 +59,7 @@ let
 
         @async begin
             sleep(5.0) # To retard first iter
-            @info("Starting client loop")
+            @info("run_sync_loop(client_gl)")
             GitLinks.run_sync_loop(client_gl; niters = 500, verbose, tout = 60.0)
         end
         
@@ -68,7 +70,7 @@ let
 
         @async begin
             sleep(5.0) # To retard first iter
-            @info("Starting server loop")
+            @info("run_sync_loop(server_gl)")
             @async GitLinks.run_sync_loop(server_gl; niters = 500, verbose, tout = 60.0)
         end
 
@@ -130,7 +132,7 @@ let
         @info("Testing ping")
         ping_test = false
         onping() = (ping_test = true)
-        @test GitLinks.ping(client_gl; verbose = false, tout = 10.0, onping)
+        @test GitLinks.ping(client_gl; verbose = false, tout = 17.0, onping)
         @test ping_test
 
         @info("Done")

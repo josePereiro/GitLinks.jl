@@ -10,9 +10,8 @@ let
         println("-"^60, "\n")
 
         # upstream
-        url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose)
-        @show url
-        @show upstream_repo
+        branch_name = "test_branch"
+        url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose, branch_name)
         @assert isdir(upstream_repo)
 
         @test !isempty(GitLinks._remote_HEAD_hash(url))
@@ -21,12 +20,11 @@ let
 
         @test GitLinks._check_gitdir(upstream_repo)
         @test !GitLinks._check_gitdir(tempname())
-        @test GitLinks._curr_branch(upstream_repo) == "main"
+        @test GitLinks._curr_branch(upstream_repo) == branch_name
 
         # local repo
         local_root = tempname()
         GitLinks._rm(local_root)
-        @show local_root
         
         gl = GitLinks.GitLink(local_root, url)
         local_repo = GitLinks.repo_dir(gl)
