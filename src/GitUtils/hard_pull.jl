@@ -34,7 +34,7 @@ function hard_pull(gl::GitLink; verbose = false, clearwd = true)
     end
 
     # check success
-    chash = _curr_hash(rootdir)
+    chash = _HEAD_hash(rootdir)
     if rhash != chash
         _rm(rootdir) # something fail
         return false

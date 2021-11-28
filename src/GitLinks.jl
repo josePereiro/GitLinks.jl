@@ -9,10 +9,13 @@ module GitLinks
     include("GitUtils/check_gitdir.jl")
     include("GitUtils/check_remote.jl")
     include("GitUtils/config.jl")
+    include("GitUtils/commits_behind_remote.jl")
     include("GitUtils/curr_branch.jl")
-    include("GitUtils/curr_hash.jl")
+    include("GitUtils/HEAD_hash.jl")
+    include("GitUtils/fetch.jl")
     include("GitUtils/hard_pull.jl")
     include("GitUtils/is_up_to_day.jl")
+    include("GitUtils/list_commits.jl")
     include("GitUtils/nuke_remote.jl")
     include("GitUtils/ready_to_push.jl")
     include("GitUtils/soft_push.jl")
@@ -39,11 +42,12 @@ module GitLinks
     
     include("Client/upload.jl")
     include("Client/ping.jl")
+    include("Client/git_status.jl")
 
     export GitLink, instantiate, stage, readwdir
     export repo_dir, state_dir
     export waitfor_pull, waitfor_stage, waitfor_push
     export is_push_required, is_pull_required
-    export sync_link, upload, ping
+    export sync_link, upload, ping, git_status
 
 end

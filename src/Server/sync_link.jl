@@ -61,7 +61,7 @@ function sync_link(gl::GitLink;
         pull_token = _set_pull_token(gl) # Aknowlage succeful pull
 
         ## ---------------------------------------------------
-        verbose && @info("Pull info", pull_token, chash = _curr_hash(gl))
+        verbose && @info("Pull info", pull_token, chash = _HEAD_hash(gl))
 
         ## ---------------------------------------------------
         if push_flag
@@ -84,7 +84,7 @@ function sync_link(gl::GitLink;
             push_token = _set_push_token(gl) # Aknowlage succeful pull
 
             ## ---------------------------------------------------
-            verbose && @info("Push info", push_token, chash = _curr_hash(gl))
+            verbose && @info("Push info", push_token, chash = _HEAD_hash(gl))
             
             ## ---------------------------------------------------
             stage_token = _set_stage_token(gl, push_token) # Aknowlage succeful upload

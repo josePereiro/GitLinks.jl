@@ -16,7 +16,7 @@ function soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())")
     isempty(rhash0) && return false
 
     # check it is sync
-    chash0 = _curr_hash(rootdir)
+    chash0 = _HEAD_hash(rootdir)
     (rhash0 != chash0) && return false
 
     # check repodir
@@ -34,7 +34,7 @@ function soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())")
 
     # check success
     rhash1 = _check_remote(url)
-    chash1 = _curr_hash(rootdir)
+    chash1 = _HEAD_hash(rootdir)
     if rhash0 == rhash1 && chash0 == chash1
         _rm(rootdir) # something fail
         return false

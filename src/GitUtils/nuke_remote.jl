@@ -45,7 +45,7 @@ function nuke_remote(gl::GitLink;
 
     # check success
     rhash = _check_remote(url)
-    chash = _curr_hash(gl_repo)
+    chash = _HEAD_hash(gl_repo)
     if rhash != chash || rhash == rhash0
         _rm(gl_repo) # something fail
         return false
