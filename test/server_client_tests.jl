@@ -6,6 +6,7 @@ let
     try
         url, upstream_repo = GitLinks._create_local_upstream(;verbose)
 
+        # Server
         # Setup
         local_root = tempname()
         GitLinks._rm(local_root)
@@ -19,9 +20,9 @@ let
         # Stage something
         dummy_name = "test-dymmy.txt"
         staged_dummy = ""
-        repo_dummy = joinpath(GitLinks.repo_dir(gl), dummy_name)
-        @test !isfile(repo_dummy)
-        GitLinks.stage!(gl) do sdir
+        repo_dummy0 = joinpath(GitLinks.repo_dir(gl), dummy_name)
+        @test !isfile(repo_dummy0)
+        GitLinks.stage(gl) do sdir
             println("\n", "-"^60)
             @info("Staging")
             @show sdir
@@ -39,8 +40,12 @@ let
         GitLinks._rm(local_root)
         GitLinks.sync_loop(gl; niters = 1, verbose)
 
-        # check dummy
-        @test isfile(repo_dummy)
+        # Client
+        # check dummy (readwdir)
+        GitLinks.readwdir(gl) do wdir
+            repo_dummy1 = joinpath(wdir, dummy_name)
+            @test isfile(repo_dummy1)
+        end
 
     finally
         # clear

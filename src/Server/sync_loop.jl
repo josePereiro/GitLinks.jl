@@ -10,9 +10,6 @@ function sync_loop(gl::GitLink;
     # Globals
     lf = lock_file(gl)
     lid = ""
-    pull_flag = _is_pull_required(gl)
-    push_flag = _is_push_required(gl)
-    # _is_push_required()
 
     for it in 1:niters
         
@@ -41,15 +38,15 @@ function sync_loop(gl::GitLink;
         ## ---------------------------------------------------
         # RESOLVE DOLOOP FlAG
         pull_flag = _is_pull_required(gl)
-        push_flag = _is_push_required(gl)
-        doloop = pull_flag || push_flag
+        stage_flag = _is_stage_up_to_day(gl)
+        doloop = pull_flag || !stage_flag
         if !doloop # Handle idle
             add_loop_frec!(gl::GitLink, _LOOP_FREC_IDLE_PENALTY)
             continue
         end
         
         ## ---------------------------------------------------
-        verbose && @info("Doing", pull_flag, push_flag)
+        verbose && @info("Doing", pull_flag, stage_flag)
 
         ## ---------------------------------------------------
         # HARD PULL (Loop)
@@ -83,7 +80,7 @@ function sync_loop(gl::GitLink;
         verbose && @info("Push info", chash = _curr_hash(gl))
 
         ## ---------------------------------------------------
-        # HANDLE sSUCCEFUL LOOP
+        # HANDLE SUCCEFUL LOOP
         loop_frec!(gl, _MIN_LOOP_FREC) # Reset loop frec
         new_stage_token = _sync_stage_tokens!(gl) # Aknowlage succeful upload
         is_stage_sync = _is_stage_up_to_day(gl)
@@ -91,11 +88,11 @@ function sync_loop(gl::GitLink;
         ## ---------------------------------------------------
         verbose && @info("Success!", new_stage_token, is_stage_sync)
         
-
         verbose && println()
     end
 
-    release_lock(lf, lid) # In case it is mine
+    # Free lock
+    release_lock(lf, lid) 
 
     return nothing
 

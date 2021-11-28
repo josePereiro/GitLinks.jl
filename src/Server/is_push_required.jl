@@ -1,1 +1,0 @@
-_is_push_required(gl::GitLink) = !_is_stage_up_to_day(gl)
