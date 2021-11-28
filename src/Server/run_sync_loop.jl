@@ -1,3 +1,10 @@
+"""
+    run_sync_loop(gl::GitLink; niters = typemax(Int), verbose = true)
+
+Run sucesive `sync_link` operations over the `GilLink` (`niters` tell how many).
+It is a lazy method, if no action is require no action will be made (use `force` to avoid it).
+A server might call this method asynchronously.
+"""
 function run_sync_loop(gl::GitLink; 
         niters = typemax(Int), verbose = true
     )
