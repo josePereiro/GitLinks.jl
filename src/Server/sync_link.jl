@@ -11,7 +11,10 @@ It is a lazy method, if no action is require no action will be made (use `force`
 This method will sleep till (or timeout `tout`) the GitLink lock is free (which must by must of the time, but...).
 Returns `true` if the action was succeful.
 """
-function sync_link(gl::GitLink; verbose = true, force = true)
+function sync_link(gl::GitLink; 
+        verbose = true, force = true, 
+        before_push::Function = () -> nothing
+    )
 
     # Globals
     lf = lock_file(gl)
@@ -46,7 +49,7 @@ function sync_link(gl::GitLink; verbose = true, force = true)
         end
         
         ## ---------------------------------------------------
-        verbose && @info("Doing", pull_flag, stage_flag)
+        verbose && @info("Doing", pull_flag, push_flag)
 
         ## ---------------------------------------------------
         # HARD PULL (Loop)
@@ -66,6 +69,10 @@ function sync_link(gl::GitLink; verbose = true, force = true)
             ## ---------------------------------------------------
             # MERGE STAGE
             _merge_stage(gl)
+
+            ## ---------------------------------------------------
+            # CALLBACK
+            before_push()
 
             ## ---------------------------------------------------
             # SOFT PUSH

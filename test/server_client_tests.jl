@@ -58,7 +58,7 @@ let
         @async begin
             sleep(5.0) # To retard first iter
             @info("Starting client loop")
-            GitLinks.run_sync_loop(client_gl; niters = 500, verbose)
+            GitLinks.run_sync_loop(client_gl; niters = 500, verbose, tout = 60.0)
         end
         
         @info("waitfor_push")
@@ -69,7 +69,7 @@ let
         @async begin
             sleep(5.0) # To retard first iter
             @info("Starting server loop")
-            @async GitLinks.run_sync_loop(server_gl; niters = 500, verbose)
+            @async GitLinks.run_sync_loop(server_gl; niters = 500, verbose, tout = 60.0)
         end
 
         # check target arrived
@@ -84,7 +84,6 @@ let
             println("\n", "-"^60)
             @info("Reading wdir")
             @test wdir == GitLinks.repo_dir(server_gl)
-            @show wdir
             target_dummy = joinpath(wdir, dummy_name)
             @test isfile(target_dummy)
             readwdir_test = true
@@ -111,7 +110,6 @@ let
             println("\n", "-"^60)
             @info("upload")
             @test sdir == GitLinks.stage_dir(client_gl)
-            @show sdir
             staged_dummy = joinpath(sdir, dummy_name)
             write(staged_dummy, rand())
             upload_test = true
@@ -128,6 +126,9 @@ let
             gool && break
         end
         @test isfile(target_dummy)
+
+        @info("Testing ping")
+        @test GitLinks.ping(client_gl; verbose = false, tout = 20.0)
 
         @info("Done")
         

@@ -4,12 +4,10 @@ function _waitfor_token_change(fn::String;
 
     t0 = time()
     token0 = _read_token(fn)
-    # @show token0
 
     while true
         sleep(wt)
         token = _read_token(fn)
-        # @show token
         token0 != token && return true
         (time() - t0) > tout && return false
     end
