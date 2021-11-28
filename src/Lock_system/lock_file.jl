@@ -99,6 +99,7 @@ end
 get_lock(gl::GitLink; kwargs...) = get_lock(lock_file(gl); kwargs...)
 
 import Base.lock
+# TODO: document this
 function lock(f::Function, gl::GitLink;
         vtime = _LOCK_DFT_VALID_TIME, 
         wt = _LOCK_DFT_WAIT_TIME, 

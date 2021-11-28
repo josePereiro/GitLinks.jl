@@ -99,6 +99,5 @@ let
         # clear
         GitLinks._rm(local_root)
         GitLinks._rm(upstream_repo)
-        # run(`open $(local_root)`)
     end
 end

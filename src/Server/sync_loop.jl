@@ -67,6 +67,7 @@ function sync_loop(gl::GitLink;
         _merge_stage(gl)
 
         ## ---------------------------------------------------
+        @info("Stage merged")
         println.(readdir(GitLinks.repo_dir(gl)))
         println()    
 
@@ -84,8 +85,8 @@ function sync_loop(gl::GitLink;
         ## ---------------------------------------------------
         # HANDLE sSUCCEFUL LOOP
         loop_frec!(gl, _MIN_LOOP_FREC) # Reset loop frec
-        new_stage_token = _sync_stage_token!(gl) # Aknowlage succeful upload
-        is_stage_sync = _is_stage_token_sync(gl)
+        new_stage_token = _sync_stage_tokens!(gl) # Aknowlage succeful upload
+        is_stage_sync = _is_stage_up_to_day(gl)
 
         ## ---------------------------------------------------
         verbose && @info("Success!", new_stage_token, is_stage_sync)

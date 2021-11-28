@@ -27,6 +27,7 @@ include("Lock_system/lock_file.jl")
 
 include("DevLand/create_local_upstream.jl")
 
+include("Server/instantiate.jl")
 include("Server/loop_frec.jl")
 include("Server/is_pull_required.jl")
 include("Server/is_push_required.jl")

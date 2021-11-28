@@ -1,26 +1,46 @@
-const _STAGE_TOKEN_FILE_NAME! = "gl-stage-token"
-_stage_token_file(gl::GitLink) = 
-    joinpath(local_state_dir(gl), _STAGE_TOKEN_FILE_NAME!)
-
-const _LAST_STAGE_TOKEN_KEY = :last_stage_token_key
-last_stage_token(gl::GitLink) = get!(gl, _LAST_STAGE_TOKEN_KEY, "")
-last_stage_token!(gl::GitLink, token) = set!(gl, _LAST_STAGE_TOKEN_KEY, string(token))
-
-function _is_stage_token_sync(gl::GitLink)
-    stfile = _stage_token_file(gl)
-    !isfile(stfile) && return false
-    disk_token = strip(read(stfile, String))
-    isempty(disk_token) && return false
-    last_token = last_stage_token(gl)
-    return disk_token == last_token
+function _read_token_file(fn::String)
+    !isfile(fn) && return ""
+    return string(strip(read(fn, String)))
 end
 
-function _sync_stage_token!(gl::GitLink)
-    stfile = _stage_token_file(gl)
-    _mkdir(stfile)
+# version-token
+const _STAGE_VERSION_TOKEN_FILE_NAME = "gl-stage-version-token"
+_stage_version_token_file(gl::GitLink) = 
+    joinpath(local_state_dir(gl), _STAGE_VERSION_TOKEN_FILE_NAME)
+
+function _set_new_stage_version(gl::GitLink)
+    vtoken_file = _stage_version_token_file(gl)
+    _mkdir(vtoken_file)
     new_token = rand_str()
-    write(stfile, new_token)
-    last_stage_token!(gl, new_token)
+    write(vtoken_file, new_token)
+    return new_token
+end
+
+# push-token
+const _STAGE_PUSHED_TOKEN_FILE_NAME = "gl-stage-pushed-token"
+_stage_pushed_token_file(gl::GitLink) = 
+    joinpath(local_state_dir(gl), _STAGE_PUSHED_TOKEN_FILE_NAME)
+
+function _is_stage_up_to_day(gl::GitLink)
+    vtoken_file = _stage_version_token_file(gl)
+    ptoken_file = _stage_pushed_token_file(gl)
+
+    vtoken = _read_token_file(vtoken_file)
+    ptoken = _read_token_file(ptoken_file)
+
+    isempty(vtoken) && return false
+    isempty(ptoken) && return false
+
+    return vtoken == ptoken
+end
+
+function _sync_stage_tokens!(gl::GitLink)
+    vtoken_file = _stage_version_token_file(gl)
+    ptoken_file = _stage_pushed_token_file(gl)
+    _mkdir(vtoken_file)
+    new_token = rand_str()
+    write(vtoken_file, new_token)
+    write(ptoken_file, new_token)
     return new_token
 end
 
@@ -28,7 +48,7 @@ function _merge_stage(gl::GitLink)
     rdir = repo_dir(gl)
     sdir = stage_dir(gl)
 
-    for src in _readdir(sdir)
+    for src in _readdir(sdir; join = true)
         dest = replace(src, sdir => rdir)
         _cp(src, dest)
     end
@@ -62,7 +82,7 @@ function stage!(gl::GitLink, files::Vector{String};
         else
             error("""root != "" not implemented, yet!!!!""")
         end
-        _sync_stage_token!(gl)
+        _set_new_stage_version(gl)
         ok_flag = true
     end
     return ok_flag
@@ -89,7 +109,7 @@ function stage!(upfun::Function, gl::GitLink;
 
     lock(gl; tout) do
         upfun(sdir)
-        _sync_stage_token!(gl)
+        _set_new_stage_version(gl)
         ok_flag = true
     end
 
