@@ -1,7 +1,5 @@
 module GitLinks
 
-import TOML
-
 include("Types/GitLink.jl")
 
 include("Utils/rand_str.jl")
