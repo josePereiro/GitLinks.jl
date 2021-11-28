@@ -3,7 +3,7 @@ function _commits_behind_remote(repodir::String, url::String, remote_branch = "o
     clist = _list_commits(repodir, remote_branch; count = deep)    
     ch = GitLinks._HEAD_hash(repodir)
     chidx = findfirst(isequal(ch), clist)
-    return isnothing(chidx) ? -1 : diff - 1
+    return isnothing(chidx) ? -1 : chidx - 1
 end
 _fetch(gl::GitLink, remote_branch = "origin/main"; kwargs...) = 
     _fetch(repo_dir(gl), remote_url(gl), remote_branch = "origin/main"; kwargs...)
