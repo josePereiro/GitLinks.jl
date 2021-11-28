@@ -7,5 +7,5 @@ Returns `true` if the action was succeful.
 function instantiate(gl::GitLink; verbose = true)
 
     # Sync GitLink
-    return sync(gl; verbose, force = true)
+    return sync_link(gl; verbose, force = true)
 end

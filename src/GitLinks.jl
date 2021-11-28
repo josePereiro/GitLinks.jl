@@ -32,8 +32,9 @@ module GitLinks
     include("Server/is_push_required.jl")
     include("Server/readwdir.jl")
     include("Server/stage.jl")
-    include("Server/stop_signal.jl")
     include("Server/run_sync_loop.jl")
+    include("Server/stop_signal.jl")
+    include("Server/sync_link.jl")
     include("Server/tokens.jl")
     include("Server/upload.jl")
 
@@ -41,6 +42,6 @@ module GitLinks
     export repo_dir, state_dir
     export waitfor_pull, waitfor_stage, waitfor_push
     export is_push_required, is_pull_required
-    export upload
+    export sync_link, upload
 
 end
