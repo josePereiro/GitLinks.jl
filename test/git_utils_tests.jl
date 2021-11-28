@@ -15,9 +15,9 @@ let
         @show upstream_repo
         @assert isdir(upstream_repo)
 
-        @test !isempty(GitLinks._check_remote(url))
+        @test !isempty(GitLinks._remote_HEAD_hash(url))
         @test !isempty(GitLinks._HEAD_hash(upstream_repo))
-        @test GitLinks._check_remote(url) == GitLinks._HEAD_hash(upstream_repo)
+        @test GitLinks._remote_HEAD_hash(url) == GitLinks._HEAD_hash(upstream_repo)
 
         @test GitLinks._check_gitdir(upstream_repo)
         @test !GitLinks._check_gitdir(tempname())

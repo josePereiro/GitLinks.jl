@@ -13,7 +13,7 @@ function hard_pull(gl::GitLink; verbose = false, clearwd = true)
     url = remote_url(gl)
 
     # check remote
-    rhash = _check_remote(url)
+    rhash = _remote_HEAD_hash(url)
     isempty(rhash) && return false
     
     

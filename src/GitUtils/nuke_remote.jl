@@ -9,7 +9,7 @@ function nuke_remote(gl::GitLink;
     url = remote_url(gl)
 
     # check remote
-    rhash0 = _check_remote(url)
+    rhash0 = _remote_HEAD_hash(url)
     isempty(rhash0) && return false
 
     # reinit
@@ -44,7 +44,7 @@ function nuke_remote(gl::GitLink;
     # _run("git -C $(gl_repo) push origin --mirror 2>&1"; verbose, ignorestatus)
 
     # check success
-    rhash = _check_remote(url)
+    rhash = _remote_HEAD_hash(url)
     chash = _HEAD_hash(gl_repo)
     if rhash != chash || rhash == rhash0
         _rm(gl_repo) # something fail

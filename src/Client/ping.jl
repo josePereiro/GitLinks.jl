@@ -1,40 +1,53 @@
 function ping(gl::GitLink; 
         tout = 30.0, 
-        verbose = true,
-        atping::Function = () -> nothing
+        verbose = false,
+        onping::Function = () -> nothing
     )
 
     # send signal
     @info("Sending ping signal")
     before_push = () -> _write_ping_signal(gl, tout)
     ok_sync = sync_link(gl::GitLink; verbose, force = true, before_push)
-    !ok_sync && error("Sync fail")
+    !ok_sync && (@error("Sync fail"); return)
     @info("Ping signal sended")
+    
+    rhash0 = _remote_HEAD_hash(gl)
+    
+    # init time
+    tot_t = time()
+    ping_t = time()
 
     try
+        @info("Waiting for response...", )
+        ping_count = 0
 
-        # init time
-        t0 = time()
-        
-        # wait response
-        @info("Waiting for response...")
         while true
-            is_pull_required(gl) && break
-            (time() - t0) > 1.5 * tout && break
-            sleep(1.0)
+            for _ in 1:3
+                if (time() - tot_t) > 15.0 + tout 
+                    tot_time = round(time() - tot_t; sigdigits = 3)
+                    @info("Time out, total time: $(tot_time)(s)")
+                    return
+                end
+
+                chash = _HEAD_hash(gl)
+                rhash = _remote_HEAD_hash(gl)
+
+                # ping!
+                new_remote_hash = rhash0 != rhash
+                remote_ahead = rhash != chash
+                if new_remote_hash && remote_ahead
+                    time_ = round(time() - ping_t; sigdigits = 3)
+                    ping_count += 1
+                    @info("Ping $(ping_count) succeded, time: $(time_)(s)")
+                    onping()
+                    ping_t = time()
+                    rhash0 = rhash
+                end
+
+                sleep(1.0)
+            end
         end
-        ok_flag = is_pull_required(gl)
         
-        # show results
-        if ok_flag
-            @info("Ping succeded", time = round(time() - t0; sigdigits = 3))
-            atping()
-            return true
-        else
-            @error("Ping fail", tout)
-            return false
-        end
-    
     catch err
         (err isa InterruptException) && return
         rethrow(err)

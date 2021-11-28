@@ -7,7 +7,7 @@ module GitLinks
     include("Utils/runcmd.jl")
 
     include("GitUtils/check_gitdir.jl")
-    include("GitUtils/check_remote.jl")
+    include("GitUtils/remote_HEAD_hash.jl")
     include("GitUtils/config.jl")
     include("GitUtils/commits_behind_remote.jl")
     include("GitUtils/curr_branch.jl")

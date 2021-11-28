@@ -128,7 +128,10 @@ let
         @test isfile(target_dummy)
 
         @info("Testing ping")
-        @test GitLinks.ping(client_gl; verbose = false, tout = 20.0)
+        ping_test = false
+        onping() = (ping_test = true)
+        @test GitLinks.ping(client_gl; verbose = false, tout = 10.0, onping)
+        @test ping_test
 
         @info("Done")
         
