@@ -1,5 +1,5 @@
-function _clear_wd(rootdir)
-    for path in _readdir(rootdir; join = true)
+function _clear_wd(gl_repo)
+    for path in _readdir(gl_repo; join = true)
         endswith(path, ".git") && continue
         _rm(path)
     end
@@ -8,35 +8,37 @@ end
 function hard_pull(gl::GitLink; verbose = false, clearwd = true)
 
     ignorestatus = true
-    rootdir = repo_dir(gl)
-    mkpath(rootdir)
+    gl_repo = repo_dir(gl)
     url = remote_url(gl)
+    mkpath(gl_repo)
 
-    # check remote
+    # check remote connection
     rhash = _remote_HEAD_hash(url)
     isempty(rhash) && return false
-    
-    
-    # clear wd
-    clearwd && _clear_wd(rootdir)
 
-    if _check_gitdir(rootdir)
+    # # enforce repo format (lazy method)
+    # _format_repo!(gl_repo, url; verbose) || return false
+
+    # clear wd
+    clearwd && _clear_wd(gl_repo)
+
+    if _check_gitdir(gl_repo)
         # if all ok 
-        _run("git -C $(rootdir) fetch 2>&1"; verbose, ignorestatus)
-        _run("git -C $(rootdir) reset --hard FETCH_HEAD 2>&1"; verbose, ignorestatus)
+        _run("git -C $(gl_repo) fetch 2>&1"; verbose, ignorestatus)
+        _run("git -C $(gl_repo) reset --hard FETCH_HEAD 2>&1"; verbose, ignorestatus)
     else
         # clone
-        _rm(rootdir)
-        mkpath(rootdir)
-        _run("git -C $(rootdir) clone --depth=1 $(url) $(rootdir) 2>&1"; verbose, ignorestatus)
-        _run("git -C $(rootdir) fetch 2>&1"; verbose, ignorestatus)
-        _run("git -C $(rootdir) reset --hard FETCH_HEAD 2>&1"; verbose, ignorestatus)
+        _rm(gl_repo)
+        mkpath(gl_repo)
+        _run("git -C $(gl_repo) clone --depth=1 $(url) $(gl_repo) 2>&1"; verbose, ignorestatus)
+        _run("git -C $(gl_repo) fetch 2>&1"; verbose, ignorestatus)
+        _run("git -C $(gl_repo) reset --hard FETCH_HEAD 2>&1"; verbose, ignorestatus)
     end
 
     # check success
-    chash = _HEAD_hash(rootdir)
+    chash = _HEAD_hash(gl_repo)
     if rhash != chash
-        _rm(rootdir) # something fail
+        _rm(gl_repo) # something fail
         return false
     end
     return true

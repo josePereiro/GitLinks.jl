@@ -8,25 +8,25 @@ function ping(gl::GitLink;
     @info("Sending ping signal")
     before_push = () -> _write_ping_signal(gl, tout)
     ok_sync = sync_link(gl::GitLink; verbose, force = true, before_push)
-    !ok_sync && (@error("Sync fail"); return)
+    !ok_sync && (@error("Sync fail"); return false)
     @info("Ping signal sended")
     
     rhash0 = _remote_HEAD_hash(gl)
     
-    # init time
+    # globals
     tot_t = time()
     ping_t = time()
+    ping_count = 0
 
     try
         @info("Waiting for response...", )
-        ping_count = 0
 
         while true
             for _ in 1:3
                 if (time() - tot_t) > 15.0 + tout 
                     tot_time = round(time() - tot_t; sigdigits = 3)
                     @info("Time out, total time: $(tot_time)(s)")
-                    return
+                    return ping_count > 0
                 end
 
                 chash = _HEAD_hash(gl)
@@ -52,5 +52,6 @@ function ping(gl::GitLink;
         (err isa InterruptException) && return
         rethrow(err)
     end
-    
+
+    return ping_count > 0
 end

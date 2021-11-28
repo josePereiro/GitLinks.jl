@@ -1,7 +1,11 @@
-function _create_local_upstream(rootdir = tempname(); verbose = true)
+function _create_local_upstream(rootdir = tempname(); 
+        verbose = true,
+        branch_name = "main"
+    )
     
     # home dirs
     upstream_repo = joinpath(rootdir, "upstream_repo")
+    _rm(upstream_repo)
     mkpath(upstream_repo)
     
     # create upstream
@@ -25,7 +29,10 @@ function _create_local_upstream(rootdir = tempname(); verbose = true)
     _run("git -C $(cdir) push 2>&1"; verbose)
 
     # rename branch
-    _run("git -C $(upstream_repo) branch -m master main"; verbose)
+    curr_branch = _curr_branch(upstream_repo)
+    if curr_branch != branch_name
+        _run("git -C $(upstream_repo) branch -m $(curr_branch) $(branch_name) 2>&1"; verbose)
+    end
     
     verbose && println("\n", "-"^60, "\n")
     _run("git -C $(upstream_repo) --no-pager log 2>&1"; verbose)
