@@ -1,4 +1,4 @@
-function _is_pull_required(gl::GitLink)
+function is_pull_required(gl::GitLink)
     gl_repo = repo_dir(gl)
     url = remote_url(gl)
     rhash = _check_remote(url)

@@ -3,10 +3,7 @@ const _LOCK_FORCE_TIME = 360.0
 const _LOOP_FREC_FAIL_PENALTY = 5.0
 const _LOOP_FREC_IDLE_PENALTY = 0.5
 
-function run_sync_loop(gl::GitLink; 
-        niters = typemax(Int), verbose = true, 
-        force = false
-    )
+function sync(gl::GitLink; verbose = true, force = false)
 
     # Globals
     lf = lock_file(gl)
@@ -14,17 +11,8 @@ function run_sync_loop(gl::GitLink;
     pull_token = _get_pull_token(gl)
     push_token = _get_push_token(gl)
     stage_token = _get_stage_token(gl)
-
-    for it in 1:niters
-        
-        ## ---------------------------------------------------
-        # Stop signal (mainly for dev purposes)
-        _get_stop_signal(gl) && return nothing
-
-        ## ---------------------------------------------------
-        # NEW ITER
-        verbose && println("-"^60)
-        verbose && @info("Loop iter", it, loop_frec = loop_frec(gl))
+    
+    try
 
         ## ---------------------------------------------------
         # WAIT
@@ -37,7 +25,7 @@ function run_sync_loop(gl::GitLink;
         if isempty(lid) # if fail force (avoid deadlock)
             _rm(lf)
             add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
-            continue
+            return false
         end
 
         ## ---------------------------------------------------
@@ -45,12 +33,12 @@ function run_sync_loop(gl::GitLink;
 
         ## ---------------------------------------------------
         # RESOLVE ACTION FlAG
-        pull_flag = force || _is_pull_required(gl)
-        push_flag = force || !_is_stage_up_to_day(gl)
+        pull_flag = force || is_pull_required(gl)
+        push_flag = force || is_push_required(gl)
         doloop = pull_flag || push_flag
         if !doloop # Handle idle
             add_loop_frec!(gl, _LOOP_FREC_IDLE_PENALTY)
-            continue
+            return false
         end
         
         ## ---------------------------------------------------
@@ -61,7 +49,7 @@ function run_sync_loop(gl::GitLink;
         pull_ok = hard_pull(gl; verbose, clearwd = true)
         if !pull_ok # Handle fail
             add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
-            continue
+            return false
         end
         pull_token = _set_pull_token(gl) # Aknowlage succeful pull
 
@@ -80,7 +68,7 @@ function run_sync_loop(gl::GitLink;
             push_ok = soft_push(gl; verbose)
             if !push_ok # Handle fail
                 add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
-                continue
+                return false
             end
             push_token = _set_push_token(gl) # Aknowlage succeful pull
 
@@ -99,13 +87,38 @@ function run_sync_loop(gl::GitLink;
 
         ## ---------------------------------------------------
         verbose && @info("Success!", stage_token, is_stage_sync)
-        
         verbose && println()
+
+        return true
+
+    finally
+        # Free lock
+        release_lock(lf, lid) 
     end
 
-    # Free lock
-    release_lock(lf, lid) 
+end
 
-    return nothing
+function run_sync_loop(gl::GitLink; 
+        niters = typemax(Int), verbose = true
+    )
+
+    for it in 1:niters
+
+        ## ---------------------------------------------------
+        # Stop signal (mainly for dev purposes)
+        _get_stop_signal(gl) && return gl
+        
+        ## ---------------------------------------------------
+        # NEW ITER
+        verbose && println("-"^60)
+        verbose && @info("Loop iter", it, loop_frec = loop_frec(gl))
+
+        ## ---------------------------------------------------
+        # SYNC LINK
+        sync(gl; verbose, force = false)
+
+    end
+
+    return gl
 
 end

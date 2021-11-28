@@ -2,6 +2,7 @@ let
     verbose = false
     upstream_repo = ""
     server_root = ""
+    client_root = ""
     server_gl = nothing
     client_gl = nothing
 
@@ -37,24 +38,27 @@ let
         dummy_name = "test-dymmy.txt"
         staged_dummy = joinpath(GitLinks.stage_dir(client_gl), dummy_name)
         target_dummy = joinpath(GitLinks.repo_dir(server_gl), dummy_name)
+        @test !isfile(staged_dummy)
         @test !isfile(target_dummy)
         stage_test = false
         GitLinks.stage(client_gl) do sdir
             println("\n", "-"^60)
-            @info("Staging")
+            @info("stage")
             @test sdir == GitLinks.stage_dir(client_gl)
             @show sdir
             staged_dummy = joinpath(sdir, dummy_name)
             write(staged_dummy, rand())
             stage_test = true
         end
-        @test stage_test
+        @test isfile(staged_dummy)
+        @test !isfile(target_dummy)
         @test !GitLinks._is_stage_up_to_day(client_gl)
+        @test GitLinks.is_push_required(client_gl)
 
         @async begin
             sleep(5.0) # To retard first iter
-            GitLinks.run_sync_loop(client_gl; niters = 500, verbose = false)
-            @info("Started client loop")
+            @info("Starting client loop")
+            GitLinks.run_sync_loop(client_gl; niters = 500, verbose)
         end
         
         @info("waitfor_push")
@@ -64,8 +68,8 @@ let
 
         @async begin
             sleep(5.0) # To retard first iter
-            @async GitLinks.run_sync_loop(server_gl; niters = 500, verbose = false)
-            @info("Started server loop")
+            @info("Starting server loop")
+            @async GitLinks.run_sync_loop(server_gl; niters = 500, verbose)
         end
 
         # check target arrived
@@ -87,16 +91,55 @@ let
         end
         @test readwdir_test
 
+        # clear
+        GitLinks._set_stop_signal!(client_gl, true)
+        GitLinks._rm(client_root)
+
+        @info("Testing upload")
+        # Set other client
+        client_root = tempname()
+        GitLinks._rm(client_root)
+        client_gl = GitLinks.GitLink(client_root, url)
+        @test GitLinks.instantiate(client_gl; verbose)
+        dummy_name = "dummy2.txt"
+        staged_dummy = joinpath(GitLinks.stage_dir(client_gl), dummy_name)
+        target_dummy = joinpath(GitLinks.repo_dir(server_gl), dummy_name)
+        @test !isfile(staged_dummy)
+        @test !isfile(target_dummy)
+        upload_test = false
+        @test GitLinks.upload(client_gl; verbose, tout = 10.0) do sdir
+            println("\n", "-"^60)
+            @info("upload")
+            @test sdir == GitLinks.stage_dir(client_gl)
+            @show sdir
+            staged_dummy = joinpath(sdir, dummy_name)
+            write(staged_dummy, rand())
+            upload_test = true
+        end
+        @test isfile(staged_dummy)
+        @test GitLinks._is_stage_up_to_day(client_gl)
+        @test !GitLinks.is_pull_required(client_gl)
+        @test !GitLinks.is_push_required(client_gl)
+
+        # check target
+        for _ in 1:10
+            sleep(1.0)
+            gool = isfile(target_dummy)
+            gool && break
+        end
+        @test isfile(target_dummy)
+
         @info("Done")
         
     finally
         # kill loops
-        @info "_set_stop_signal!"
+        @info("_set_stop_signal!")
         !isnothing(client_gl) && GitLinks._set_stop_signal!(client_gl, true)
         !isnothing(server_gl) && GitLinks._set_stop_signal!(server_gl, true)
 
         # clear
         GitLinks._rm(server_root)
+        GitLinks._rm(client_root)
         GitLinks._rm(upstream_repo)
 
     end

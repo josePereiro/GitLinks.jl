@@ -63,8 +63,8 @@ let
         upsize1 = GitLinks._foldersize(upstream_repo)
         @test upsize0 < upsize1
 
-        println("\n", "-"^60, "\n")
-        println("Before nuking")
+        println("\n", "-"^60)
+        println("Before nuking", "\n")
         run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
 
         # TODO: test that nuking actually reduce size
@@ -91,10 +91,10 @@ let
         # @show upsize3 upsize4
         # @test upsize2 < upsize1
         
-        println("\n", "-"^60, "\n")
-        println("After nuking")
+        println("\n", "-"^60)
+        println("After nuking", "\n")
         run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
-        println("\n"^3)
+        println()
 
 
     finally
