@@ -43,12 +43,11 @@ if_push(fun::Function, gl::GitLink; idkey::Symbol = _GL_PUSH_EVENT_DFLT_KEY) =
 # ---------------------------------------------------------
 # Wait for event
 
-function _waitfor_event(gl::GitLink, idkey::Symbol, up_fun!::Function, if_event::Function;
+function _waitfor_event(gl::GitLink, idkey::Symbol, if_event::Function;
         tout = 60.0, wt = 1.0
     )
 
     t0 = time()
-    up_fun!(gl; idkey)
     event_flag = false
 
     while true
@@ -68,16 +67,16 @@ end
     waitfor_pull(gl::GitLink; idkey = $(_GL_PULL_EVENT_DFLT_KEY), tout = 60.0, wt = 1.0)
 """
 waitfor_pull(gl::GitLink; idkey::Symbol = _GL_PULL_EVENT_DFLT_KEY, kwargs...) = 
-    _waitfor_event(gl, idkey, up_pull_reg!, if_pull; kwargs...)
+    _waitfor_event(gl, idkey, if_pull; kwargs...)
 
 """
     waitfor_push(gl::GitLink; idkey = $(_GL_PUSH_EVENT_DFLT_KEY), tout = 60.0, wt = 1.0)
 """
 waitfor_push(gl::GitLink; idkey::Symbol = _GL_PUSH_EVENT_DFLT_KEY, kwargs...) = 
-    _waitfor_event(gl, idkey, up_push_reg!, if_push; kwargs...)
+    _waitfor_event(gl, idkey, if_push; kwargs...)
 
 """
     waitfor_stage(gl::GitLink; idkey = $(_GL_STAGE_EVENT_DFLT_KEY), tout = 60.0, wt = 1.0)
 """
 waitfor_stage(gl::GitLink; idkey::Symbol = _GL_STAGE_EVENT_DFLT_KEY, kwargs...) = 
-    _waitfor_event(gl, idkey, up_stage_reg!, if_stage; kwargs...)
+    _waitfor_event(gl, idkey, if_stage; kwargs...)

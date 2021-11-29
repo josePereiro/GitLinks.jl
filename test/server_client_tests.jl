@@ -64,6 +64,7 @@ let
         end
         
         @info("waitfor_push")
+        GitLinks.up_push_reg!(client_gl)
         @test GitLinks.waitfor_push(client_gl; wt = 0.5, tout = 15.0)
         @test isfile(staged_dummy)
         @test GitLinks._is_stage_up_to_day(client_gl)
@@ -76,6 +77,7 @@ let
 
         # check target arrived
         @info("waitfor_pull")
+        GitLinks.up_pull_reg!(server_gl)
         @test GitLinks.waitfor_pull(server_gl; wt = 0.5, tout = 15.0)
         @test isfile(target_dummy)
 
