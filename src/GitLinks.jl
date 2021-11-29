@@ -30,7 +30,6 @@ module GitLinks
 
     include("DevLand/create_local_upstream.jl")
 
-    include("Server/events.jl")
     include("Server/instantiate.jl")
     include("Server/loop_frec.jl")
     include("Server/is_pull_required.jl")
@@ -42,6 +41,7 @@ module GitLinks
     include("Server/sync_link.jl")
     include("Server/tokens.jl")
     
+    include("Client/events.jl")
     include("Client/upload.jl")
     include("Client/ping.jl")
     include("Client/git_status.jl")
