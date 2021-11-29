@@ -15,7 +15,7 @@ let
 
         ## ------------------------------------------------------------
         # Remote
-        url, upstream_repo = GitLinks._create_local_upstream(;
+        url, upstream_repo = GitLinks.create_local_upstream(;
             # branch_name = "master", # This will force a repo formatting
             verbose
         )

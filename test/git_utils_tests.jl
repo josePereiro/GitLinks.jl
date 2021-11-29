@@ -11,7 +11,7 @@ let
 
         # upstream
         branch_name = "test_branch"
-        url, upstream_repo = GitLinks._create_local_upstream(tempname(); verbose, branch_name)
+        url, upstream_repo = GitLinks.create_local_upstream(tempname(); verbose, branch_name)
         @assert isdir(upstream_repo)
 
         @test !isempty(GitLinks._remote_HEAD_hash(url))

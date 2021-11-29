@@ -1,10 +1,17 @@
-function _create_local_upstream(rootdir = tempname(); 
+"""
+    create_local_upstream(rootdir = tempname(); verbose = true, branch_name = "main")
+
+Creates a local repo usable as a remote for testing.
+Returns a tuple (;url, upstream_repo)
+"""
+function create_local_upstream(
+        rootdir = tempname(); 
         verbose = true,
         branch_name = "main"
     )
     
     # home dirs
-    upstream_repo = joinpath(rootdir, "upstream_repo")
+    upstream_repo = joinpath(rootdir, "upstream")
     _rm(upstream_repo)
     mkpath(upstream_repo)
     

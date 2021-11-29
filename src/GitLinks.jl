@@ -48,6 +48,7 @@ module GitLinks
 
     export GitLink, instantiate, stage, readwdir
     export repo_dir, state_dir
+    export create_local_upstream
     export waitfor_pull, waitfor_stage, waitfor_push
     export if_pull, if_stage, if_push
     export is_push_required, is_pull_required
