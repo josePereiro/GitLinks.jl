@@ -11,3 +11,4 @@ Allows to synchronize folders using `git` automatically.
 - Add `GitLink` identifiers (allows using a single repo for several machines)
 - More configurable `git` CLI utils
 - Use `libgit2` (in addition to CLI) for `git` operations (help wanted)
+- Add a log system (fetchable)
