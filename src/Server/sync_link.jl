@@ -13,7 +13,8 @@ Returns `true` if the action was succeful.
 """
 function sync_link(gl::GitLink; 
         verbose = true, force = true, 
-        before_push::Function = () -> nothing
+        before_push::Function = () -> nothing,
+        tout = _LOCK_FORCE_TIME
     )
 
     # Globals
@@ -28,7 +29,7 @@ function sync_link(gl::GitLink;
         ## ---------------------------------------------------
         # ACQUIRE LOCK
         release_lock(lf, lid) # In case it is mine
-        lid, ttag = get_lock(lf; tout = _LOCK_FORCE_TIME)
+        lid, ttag = get_lock(lf; tout)
         if isempty(lid) # if fail force (avoid deadlock)
             _rm(lf)
             add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)

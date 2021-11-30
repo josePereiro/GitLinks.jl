@@ -34,19 +34,21 @@ module GitLinks
     include("Server/loop_frec.jl")
     include("Server/is_pull_required.jl")
     include("Server/is_push_required.jl")
-    include("Server/readwdir.jl")
-    include("Server/stage.jl")
+    include("Server/stage_sync.jl")
     include("Server/signals.jl")
     include("Server/run_sync_loop.jl")
     include("Server/sync_link.jl")
     include("Server/tokens.jl")
     
+    include("Client/readwdir.jl")
+    include("Client/writewdir.jl")
     include("Client/events.jl")
+    include("Client/stage.jl")
     include("Client/upload.jl")
     include("Client/ping.jl")
     include("Client/git_status.jl")
 
-    export GitLink, instantiate, stage, readwdir
+    export GitLink, instantiate, stage, readwdir, writewdir
     export repo_dir, state_dir
     export create_local_upstream
     export waitfor_pull, waitfor_stage, waitfor_push

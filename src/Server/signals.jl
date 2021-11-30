@@ -1,3 +1,5 @@
+## ---------------------------------------------------------
+# Ping
 const _PING_SIGNAL_FILE_NAME = "gl-ping-signal"
 _ping_signal_file(gl::GitLink) = 
     joinpath(global_state_dir(gl), _PING_SIGNAL_FILE_NAME)

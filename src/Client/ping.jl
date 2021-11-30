@@ -6,8 +6,9 @@ function ping(gl::GitLink;
 
     # send signal
     @info("Sending ping signal")
-    before_push = () -> _write_ping_signal(gl, tout)
-    ok_sync = sync_link(gl::GitLink; verbose, force = true, before_push)
+    ok_sync = writewdir(gl; verbose) do wdir_
+        _write_ping_signal(gl, tout)
+    end
     !ok_sync && (@error("Sync fail"); return false)
     @info("Ping signal sended")
     

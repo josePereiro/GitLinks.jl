@@ -4,7 +4,7 @@
 Allow to access the working directory of the GitLink.
 The function `fun(working_dir)` will be executed and it should access
 the files into `working_dir`.
-Any changes to this files won't be commited (please do not mess up the `.git` folder).
+Any changes to those files won't be commited (please do not mess up the `.git` folder).
 It is recommended that `fun` not to be an expensive function.
 This method will sleep till (or timeout `tout`) the GitLink lock is free (which must by must of the time, but...).
 Returns `true` if the action was succeful.

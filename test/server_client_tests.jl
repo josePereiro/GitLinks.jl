@@ -94,6 +94,19 @@ let
         end
         @test readwdir_test
 
+        # test writewdir
+        writewdir_test = false
+        GitLinks.writewdir(client_gl; tout = 8.0) do wdir
+            println("\n", "-"^60)
+            @info("Writing wdir")
+            @test wdir == GitLinks.repo_dir(client_gl)
+            target_dummy = joinpath(wdir, dummy_name)
+            GitLinks._rm(target_dummy)
+            writewdir_test = true
+        end
+        @test writewdir_test
+        @test !isfile(target_dummy)
+
         # clear
         GitLinks._set_stop_signal!(client_gl, true)
         GitLinks._rm(client_root)

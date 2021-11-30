@@ -17,6 +17,7 @@ function run_sync_loop(gl::GitLink;
     )
 
     t0 = time()
+    tout = _LOCK_FORCE_TIME
 
     for it in 1:niters
 
@@ -43,7 +44,7 @@ function run_sync_loop(gl::GitLink;
 
         ## ---------------------------------------------------
         # SYNC LINK
-        sync_link(gl; verbose, force)
+        sync_link(gl; verbose, force, tout)
 
     end
 
