@@ -1,2 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
+[[SimpleLockFiles]]
+git-tree-sha1 = "6b42c3d3e7666cc6997c08b1854d0abab326d5c8"
+uuid = "0c975e61-21d9-4454-8de5-ff08fd2c478f"
+version = "0.4.2"

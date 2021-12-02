@@ -17,6 +17,7 @@ function readwdir(fun::Function, gl::GitLink;
     wdir = repo_dir(gl)
     mkpath(wdir)
 
+    # TODO: control lock vtime
     lock(gl; tout) do
         fun(wdir)
         ok_flag = true

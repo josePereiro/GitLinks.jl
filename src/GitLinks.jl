@@ -1,5 +1,8 @@
 module GitLinks
 
+    import SimpleLockFiles
+    import SimpleLockFiles: acquire_lock
+
     include("Types/GitLink.jl")
 
     include("Utils/rand_str.jl")

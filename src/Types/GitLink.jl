@@ -4,9 +4,9 @@ struct GitLink
     remote_url::String
 
     # System data
-    dat::Dict{Symbol, Any}
+    dat::Dict{Any, Any}
 
-    GitLink(root_dir, remote_url) = new(string(root_dir), string(remote_url), Dict{Symbol, Any}())
+    GitLink(root_dir, remote_url) = new(string(root_dir), string(remote_url), Dict{Any, Any}())
     GitLink(;root_dir, remote_url) = GitLink(root_dir, remote_url)
 end
 

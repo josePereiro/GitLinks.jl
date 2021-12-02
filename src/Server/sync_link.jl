@@ -28,13 +28,13 @@ function sync_link(gl::GitLink;
         
         ## ---------------------------------------------------
         # ACQUIRE LOCK
-        release_lock(lf, lid) # In case it is mine
-        lid, ttag = get_lock(lf; tout)
-        if isempty(lid) # if fail force (avoid deadlock)
-            _rm(lf)
-            add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
-            return false
-        end
+        unlock(lf, lid) # In case it is mine
+        lid, ttag = acquire_lock(lf; tout, force = true)
+        # if isempty(lid) # if fail force (avoid deadlock)
+        #     _rm(lf)
+        #     add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
+        #     return false
+        # end
 
         ## ---------------------------------------------------
         verbose && @info("Lock acquired", lid, ttag)
@@ -105,7 +105,7 @@ function sync_link(gl::GitLink;
 
     finally
         # Free lock
-        release_lock(lf, lid) 
+        unlock(lf, lid) 
     end
 
 end
