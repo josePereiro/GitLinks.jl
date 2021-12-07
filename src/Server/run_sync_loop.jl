@@ -36,7 +36,7 @@ function run_sync_loop(gl::GitLink;
         ## ---------------------------------------------------
         # NEW ITER
         verbose && println("-"^60)
-        verbose && @info("Loop iter", it, loop_frec = loop_frec(gl))
+        verbose && @info("Loop iter", it, pid = getpid(), loop_frec = loop_frec(gl))
 
         ## ---------------------------------------------------
         # FORCE
