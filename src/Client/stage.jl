@@ -70,3 +70,4 @@ function stage(upfun::Function, gl::GitLink;
 
     return ok_flag
 end
+stage(gl::GitLink; kwargs) = stage((sdir) -> nothing, gl; kwargs)
