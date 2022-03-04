@@ -31,4 +31,4 @@ function download(upfun::Function, gl::GitLink; verbose = false, tout = 60.0)
 
     return pull_ok
 end
-download(gl::GitLink; kwargs...) = 
+download(gl::GitLink; kwargs...) = download((wdir) -> nothing, gl; kwargs...)
