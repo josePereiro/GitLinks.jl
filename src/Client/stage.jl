@@ -10,7 +10,7 @@ This method will sleep till (or timeout `tout`) the GitLink lock is free (which 
 If a `root` (as a kwarg) is provided, the tree structure relative to it will be respected.
 Ex: if root = "A" and a file path is "A/B/C.txt" it will be staged as "gl-stage/B/C.txt".
 Otherwise (root = ""), the file will be copied in the repo's stage "gl-stage/C.txt".
-Returns `true` if the action was succeful.
+Returns `true` if the action was successful.
 """
 function stage(gl::GitLink, files::Vector{String}; 
         root::String = "", tout = 60.0, flag = true
@@ -52,7 +52,7 @@ The GitLink Server will upload the staged files in its next iter.
 To prevent this set the acknowledge (`flag`) to false.
 Staging is usuful (instead of `writewdir`) for acumulating changes and reduce the push rate of the link.
 This method will sleep till (or timeout `tout`) the GitLink lock is free (which must by must of the time, but...).
-Returns `true` if the action was succeful.
+Returns `true` if the action was successful.
 """
 function stage(upfun::Function, gl::GitLink; 
         tout = 60.0, flag = true

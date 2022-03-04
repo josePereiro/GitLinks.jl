@@ -8,7 +8,7 @@ Any changes to those files will be commited (please do not mess up the `.git` fo
 It is recommended that `fun` not to be an expensive function.
 This method will update all events tokens `pull/stage/push`.
 This method will sleep till (or timeout `tout`) the GitLink lock is free (which must by must of the time, but...).
-Returns `true` if the action was succeful.
+Returns `true` if the action was successful.
 """
 function writewdir(fun::Function, gl::GitLink; verbose = false, tout = 60.0)
     

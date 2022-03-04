@@ -44,6 +44,7 @@ module GitLinks
     include("Server/tokens.jl")
     
     include("Client/readwdir.jl")
+    include("Client/download.jl")
     include("Client/writewdir.jl")
     include("Client/events.jl")
     include("Client/stage.jl")
@@ -57,6 +58,6 @@ module GitLinks
     export waitfor_pull, waitfor_stage, waitfor_push
     export if_pull, if_stage, if_push
     export is_push_required, is_pull_required
-    export sync_link, upload, ping, git_status
+    export sync_link, upload, download, ping, git_status
 
 end

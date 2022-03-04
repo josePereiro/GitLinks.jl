@@ -9,7 +9,7 @@ const _LOOP_FREC_IDLE_PENALTY = 0.5
 Try to pull/merge state/push the `GitLink`.
 It is a lazy method, if no action is require no action will be made (use `force` to avoid it).
 This method will sleep till (or timeout `tout`) the GitLink lock is free (which must by must of the time, but...).
-Returns `true` if the action was succeful.
+Returns `true` if the action was successful.
 """
 function sync_link(gl::GitLink; 
         verbose = true, force = true, 
@@ -54,7 +54,7 @@ function sync_link(gl::GitLink;
             add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
             return false
         end
-        pull_token = _set_pull_token(gl) # Aknowlage succeful pull
+        pull_token = _set_pull_token(gl) # Aknowlage successful pull
 
         ## ---------------------------------------------------
         verbose && @info("Pull info", pull_token, chash = _HEAD_hash(gl))
@@ -77,13 +77,13 @@ function sync_link(gl::GitLink;
                 add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
                 return false
             end
-            push_token = _set_push_token(gl) # Aknowlage succeful pull
+            push_token = _set_push_token(gl) # Aknowlage successful pull
 
             ## ---------------------------------------------------
             verbose && @info("Push info", push_token, chash = _HEAD_hash(gl))
             
             ## ---------------------------------------------------
-            stage_token = _set_stage_token(gl, push_token) # Aknowlage succeful upload
+            stage_token = _set_stage_token(gl, push_token) # Aknowlage successful upload
 
         end
 
