@@ -7,10 +7,13 @@ A GitLink repo demands:
 function _format_repo!(repodir::String, url::String; verbose = false)
     ignorestatus = true
 
+    
     # check remote
     curr_url = _remote_url(repodir)
     if curr_url != url
+        
         # reset remote
+        _check_gitdir(repodir) || return false
         _run("git -C $(repodir) remote remove $(_REMOTE_NAME) 2>&1"; verbose, ignorestatus)
         _run("git -C $(repodir) remote add $(_REMOTE_NAME) $(url) 2>&1"; verbose, ignorestatus)
 
