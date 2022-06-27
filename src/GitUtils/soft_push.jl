@@ -23,7 +23,7 @@ function _soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())"
         (rhash0 != chash0) && continue
 
         # check repodir
-        !_check_gitdir(gl_repo) && continue
+        _check_gitdir(gl_repo) || continue
 
         # soft push
         _up_push_dummy(gl) # Update push dummy (always push)
