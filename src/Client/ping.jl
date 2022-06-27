@@ -41,7 +41,7 @@ function ping(gl::GitLink;
                 if new_remote_hash && remote_ahead
                     time_ = round(time() - ping_t; sigdigits = 3)
                     ping_count += 1
-                    @info("Ping $(ping_count) succeded, time: $(time_)(s)")
+                    @info("Ping $(ping_count) succeeded, time: $(time_)(s)")
                     onping()
                     ping_t = time()
                     rhash0 = rhash
