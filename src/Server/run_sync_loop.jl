@@ -5,19 +5,20 @@ _set_stop_signal!(gl::GitLink, sig::Bool) = set!(gl, _STOP_SIGNAL_KEY, sig)
 """
     run_sync_loop(gl::GitLink; niters = typemax(Int), verbose = true)
 
-Run sucesive `sync_link` operations over the `GilLink`.
-It will stop if `niter` or` stop_time` is reached.
+Run sucesive `_sync_link` operations over the `GilLink`.
+It will stop if `niter` or `stop_time` is reached.
 It is a lazy method, if no action is require no action will be made (use `force` to avoid it).
 A server might call this method asynchronously.
 """
 function run_sync_loop(gl::GitLink; 
         niters = typemax(Int), 
         tout = Inf,
-        verbose = true
+        verbose = true, 
+        clearwd = true, 
+        clearstage = false,
     )
 
     t0 = time()
-    tout = _LOCK_FORCE_TIME
 
     for it in 1:niters
 
@@ -44,8 +45,15 @@ function run_sync_loop(gl::GitLink;
 
         ## ---------------------------------------------------
         # SYNC LINK
-        sync_link(gl; verbose, force, tout)
-
+        _sync_link(gl; 
+            verbose, 
+            force, 
+            clearwd, 
+            clearstage,
+            tries = 1, 
+            merge_stage = true,
+        )
+        
     end
 
     return gl

@@ -26,3 +26,19 @@ function _cp(src::AbstractString, dst::AbstractString)
     try; cp(src, dst; force = true)
     catch err; end
 end
+
+function _merge_dirs(src::AbstractString, dst::AbstractString)
+    src = abspath(src)
+    dst = abspath(dst)
+    for srci in _readdir(src; join = true)
+        desti = replace(srci, src => dst)
+        _cp(srci, desti)
+    end
+end
+
+function _clear_wd(gl_repo)
+    for path in _readdir(gl_repo; join = true)
+        endswith(path, ".git") && continue
+        _rm(path)
+    end
+end

@@ -32,19 +32,19 @@ let
         
         # hard pull
         @test !isdir(local_root)
-        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # clone
+        pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # clone
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
         
-        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # pull
+        pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # pull
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
         
         GitLinks._rm(joinpath(local_repo, ".git")) # break repo
         @test !GitLinks._check_gitdir(local_root)
-        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # must recover
+        pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # must recover
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
@@ -55,7 +55,7 @@ let
             # create 'big' files
             dummy = joinpath(local_repo, "dummy$it")
             write(dummy, GitLinks.rand_str(1000))
-            push_ok = GitLinks.soft_push(gl; verbose)
+            push_ok = GitLinks._soft_push(gl; verbose)
             @test push_ok
         end
         upsize1 = GitLinks._foldersize(upstream_repo)
@@ -70,14 +70,14 @@ let
         # upsize2 = GitLinks._foldersize(upstream_repo)
         # upsize3 = GitLinks._foldersize(local_root)
 
-        nuke_ok = GitLinks.nuke_remote(gl; verbose)
-        @test nuke_ok
+        # nuke_ok = GitLinks.nuke_remote(gl; verbose)
+        # @test nuke_ok
         
-        GitLinks._rm(local_root)
-        pull_ok = GitLinks.hard_pull(gl; verbose, clearwd = true) # clone again
-        @test pull_ok
-        @test isdir(local_root)
-        @test isdir(local_repo_git)
+        # GitLinks._rm(local_root)
+        # pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # clone again
+        # @test pull_ok
+        # @test isdir(local_root)
+        # @test isdir(local_repo_git)
 
         # upsize4 = GitLinks._foldersize(local_root)
         # upsize5 = GitLinks._foldersize(upstream_repo)
@@ -89,10 +89,10 @@ let
         # @show upsize3 upsize4
         # @test upsize2 < upsize1
         
-        println("\n", "-"^60)
-        println("After nuking", "\n")
-        run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
-        println()
+        # println("\n", "-"^60)
+        # println("After nuking", "\n")
+        # run(`git -C $(upstream_repo) --no-pager log -l10 --pretty=oneline`)
+        # println()
 
 
     finally

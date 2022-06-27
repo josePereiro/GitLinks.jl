@@ -7,7 +7,7 @@ the files into `working_dir`.
 Any changes to those files won't be commited (please do not mess up the `.git` folder).
 It is recommended that `fun` not to be an expensive function.
 This method will sleep till (or timeout `tout`) the GitLink lock is free (which must by must of the time, but...).
-Returns `true` if the action was successful.
+Returns `true` if the locking action was successful.
 """
 function readwdir(fun::Function, gl::GitLink; 
         tout = 60.0

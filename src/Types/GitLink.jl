@@ -32,3 +32,6 @@ set!(gl::GitLink, key, val) = (gl.dat[key] = val)
 set!(f::Function, gl::GitLink, key) = (gl.dat[key] = f())
 
 remote_url(gl::GitLink) = gl.remote_url
+
+# Utils
+has_connection(gl::GitLink) = !isempty(_remote_HEAD_hash(remote_url(gl)))

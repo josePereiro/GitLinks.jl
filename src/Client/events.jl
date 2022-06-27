@@ -17,7 +17,7 @@ up_push_reg!(gl::GitLink; idkey = _GL_PUSH_EVENT_DFLT_KEY) =
 
 # ---------------------------------------------------------
 # Do if event
-# execute a function if the current state of the event is different
+# execute a function if the state of the event is different
 # from the current one
 
 function _if_event(fun::Function, gl::GitLink, idkey::Symbol, curr_state_fun::Function)

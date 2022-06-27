@@ -94,17 +94,18 @@ let
         end
         @test readwdir_test
 
-        # test writewdir
-        writewdir_test = false
-        GitLinks.writewdir(client_gl; tout = 8.0) do wdir
+        # test upload_wdir
+        upload_wdir_test = false
+        clearwd = false
+        GitLinks.upload_wdir(client_gl; tout = 8.0, clearwd) do wdir
             println("\n", "-"^60)
             @info("Writing wdir")
             @test wdir == GitLinks.repo_dir(client_gl)
             target_dummy = joinpath(wdir, dummy_name)
             GitLinks._rm(target_dummy)
-            writewdir_test = true
+            upload_wdir_test = true
         end
-        @test writewdir_test
+        @test upload_wdir_test
         @test !isfile(target_dummy)
 
         # clear
@@ -123,7 +124,7 @@ let
         @test !isfile(staged_dummy)
         @test !isfile(target_dummy)
         upload_test = false
-        @test GitLinks.upload(client_gl; verbose, tout = 10.0) do sdir
+        @test GitLinks.upload_stage(client_gl; verbose, tout = 10.0) do sdir
             println("\n", "-"^60)
             @info("upload")
             @test sdir == GitLinks.stage_dir(client_gl)

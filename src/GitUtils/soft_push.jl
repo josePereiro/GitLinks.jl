@@ -5,7 +5,7 @@ function _up_push_dummy(gl::GitLink)
     write(dummy, rand_str())
 end
 
-function soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())", tries = 1)
+function _soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())", tries = 1)
     for t in 1:max(tries, 1)
         # repo info
         gl_repo = repo_dir(gl)
@@ -42,6 +42,10 @@ function soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())",
             _rm(gl_repo) # something fail
             continue
         end
+
+        # Aknowlage successful pull
+        _set_push_token(gl) 
+
         return true
     end
     return false

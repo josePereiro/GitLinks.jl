@@ -1,11 +1,10 @@
-function _clear_wd(gl_repo)
-    for path in _readdir(gl_repo; join = true)
-        endswith(path, ".git") && continue
-        _rm(path)
-    end
-end
 
-function hard_pull(gl::GitLink; verbose = false, clearwd = true, tries = 1)
+
+function _hard_pull(gl::GitLink; 
+        verbose = false, 
+        clearwd = true, 
+        tries = 1
+    )
 
     for t in 1:max(tries, 1)
 
@@ -40,9 +39,13 @@ function hard_pull(gl::GitLink; verbose = false, clearwd = true, tries = 1)
         # check success
         chash = _HEAD_hash(gl_repo)
         if rhash != chash
-            _rm(gl_repo) # something fail
+            _rm(gl_repo) # something failed
             continue
         end
+
+        # Aknowlage successful pull
+        _set_pull_token(gl)
+        
         return true
     end
 

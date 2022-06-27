@@ -4,7 +4,7 @@ const _LOOP_FREC_FAIL_PENALTY = 5.0
 const _LOOP_FREC_IDLE_PENALTY = 0.5
 
 """
-    sync_link(gl::GitLink; verbose = true, force = false, tries = 1)
+    _sync_link(gl::GitLink; verbose = true, force = false, tries = 1)
 
 Try to pull/merge state/push the `GitLink`.
 It is a lazy method, if no action is require no action will be made (use `force` to avoid it).
@@ -12,11 +12,15 @@ This method will sleep till (or timeout `tout`) the GitLink lock is free (which 
 The method will attempt `tries` tries till success.
 Returns `true` if the action was successful.
 """
-function sync_link(gl::GitLink; 
-        verbose = true, force = true, 
+function _sync_link(gl::GitLink; 
+        verbose = true, 
+        force = true, 
         before_push::Function = () -> nothing,
         tout = _LOCK_FORCE_TIME, 
-        tries = 1
+        tries = 1, 
+        merge_stage = true,
+        clearwd = true, 
+        clearstage = false,
     )
 
     for t in 1:max(tries, 0)
@@ -24,15 +28,12 @@ function sync_link(gl::GitLink;
         # Globals
         lf = lock_file(gl)
         lid = ""
-        pull_token = _get_pull_token(gl)
-        push_token = _get_push_token(gl)
-        stage_token = _get_stage_token(gl)
         
         try
             
             ## ---------------------------------------------------
             # ACQUIRE LOCK
-            unlock(lf, lid) # In case it is mine
+            unlock(lf, lid) # In case it is mine, I create a new one
             lid, ttag = acquire_lock(lf; tout, force = true)
 
             ## ---------------------------------------------------
@@ -53,22 +54,24 @@ function sync_link(gl::GitLink;
 
             ## ---------------------------------------------------
             # HARD PULL (Loop)
-            pull_ok = hard_pull(gl; verbose, clearwd = true)
+            pull_ok = _hard_pull(gl; verbose, clearwd, tries = 1)
             if !pull_ok # Handle fail
                 add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
                 continue
             end
-            pull_token = _set_pull_token(gl) # Aknowlage successful pull
 
             ## ---------------------------------------------------
-            verbose && @info("Pull info", pull_token, chash = _HEAD_hash(gl))
+            verbose && @info("Pull info", 
+                pull_token = _get_pull_token(gl), 
+                chash = _HEAD_hash(gl)
+            )
 
             ## ---------------------------------------------------
             if push_flag
 
                 ## ---------------------------------------------------
                 # MERGE STAGE
-                _merge_stage(gl)
+                merge_stage && _merge_stage(gl)
 
                 ## ---------------------------------------------------
                 # CALLBACK
@@ -76,30 +79,37 @@ function sync_link(gl::GitLink;
 
                 ## ---------------------------------------------------
                 # SOFT PUSH
-                push_ok = soft_push(gl; verbose)
+                push_ok = _soft_push(gl; verbose, tries = 1)
                 if !push_ok # Handle fail
                     add_loop_frec!(gl, _LOOP_FREC_FAIL_PENALTY)
                     continue
                 end
-                push_token = _set_push_token(gl) # Aknowlage successful pull
 
                 ## ---------------------------------------------------
-                verbose && @info("Push info", push_token, chash = _HEAD_hash(gl))
+                verbose && @info("Push info", 
+                    push_token = _get_push_token(gl), 
+                    chash = _HEAD_hash(gl)
+                )
                 
                 ## ---------------------------------------------------
-                stage_token = _set_stage_token(gl, push_token) # Aknowlage successful upload
+                # Aknowlage successful upload
+                merge_stage && _set_stage_pushed_token(gl) 
 
             end
 
             ## ---------------------------------------------------
             # HANDLE SUCCEFUL LOOP
             loop_frec!(gl, _MIN_LOOP_FREC) # Reset loop frec
-            is_stage_sync = _is_stage_up_to_day(gl)
-
+            
             ## ---------------------------------------------------
-            verbose && @info("Success!", stage_token, is_stage_sync)
+            clearstage && clear_stage(gl)
+            verbose && clearstage && @info("stage cleared")
             verbose && println()
-
+            
+            ## ---------------------------------------------------
+            verbose && @info("Success!")
+            verbose && println()
+            
             return true
 
         finally

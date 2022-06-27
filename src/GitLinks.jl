@@ -22,6 +22,7 @@ module GitLinks
     include("GitUtils/is_up_to_day.jl")
     include("GitUtils/list_commits.jl")
     include("GitUtils/nuke_remote.jl")
+    include("GitUtils/remote_url.jl")
     include("GitUtils/ready_to_push.jl")
     include("GitUtils/soft_push.jl")
     include("GitUtils/url_from_file.jl")
@@ -32,6 +33,7 @@ module GitLinks
     include("Lock_system/lock_file.jl")
 
     include("DevLand/create_local_upstream.jl")
+    include("DevLand/monkey_delete.jl")
 
     include("Server/instantiate.jl")
     include("Server/loop_frec.jl")
@@ -45,19 +47,23 @@ module GitLinks
     
     include("Client/readwdir.jl")
     include("Client/download.jl")
-    include("Client/writewdir.jl")
+    include("Client/upload_wdir.jl")
     include("Client/events.jl")
     include("Client/stage.jl")
-    include("Client/upload.jl")
+    include("Client/upload_stage.jl")
     include("Client/ping.jl")
     include("Client/git_status.jl")
 
-    export GitLink, instantiate, stage, readwdir, writewdir
-    export repo_dir, state_dir
+    export GitLink
+    export instantiate, stage, readwdir, download, upload_stage, upload_wdir
+    export root_dir, repo_dir, stage_dir
+    export clear_wd, clear_stage, has_connection
+    
+    export run_sync_loop
     export create_local_upstream
     export waitfor_pull, waitfor_stage, waitfor_push
     export if_pull, if_stage, if_push
     export is_push_required, is_pull_required
-    export sync_link, upload, download, ping, git_status
+    export ping, git_status
 
 end

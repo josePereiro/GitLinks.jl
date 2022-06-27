@@ -6,7 +6,7 @@ function ping(gl::GitLink;
 
     # send signal
     @info("Sending ping signal")
-    ok_sync = writewdir(gl; verbose) do wdir_
+    ok_sync = upload_wdir(gl; verbose) do wdir_
         _write_ping_signal(gl, tout)
     end
     !ok_sync && (@error("Sync fail"); return false)
