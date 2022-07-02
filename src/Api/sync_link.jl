@@ -31,6 +31,7 @@ function sync_link(gl::GitLink;
         on_push_success::Function = _do_nothing,
         on_connection_fail::Function = _do_nothing,
         on_no_action::Function = _do_nothing,
+        on_unlock::Function = _do_nothing,
         on_success::Function = _do_nothing,
     )
 
@@ -154,19 +155,20 @@ function sync_link(gl::GitLink;
             ## ---------------------------------------------------
             verbose && @info("Success!")
             verbose && println()
-            
-            ## ---------------------------------------------------
-            on_success(gl);
-            
-            return true
+
+            break
 
         finally
             # Free lock
             unlock(lf, lid)
+            on_unlock(gl)
         end
     
     end #tries
 
-    return false
+    ## ---------------------------------------------------
+    on_success(gl);
+            
+    return true
 
 end

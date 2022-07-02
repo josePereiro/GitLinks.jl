@@ -55,6 +55,7 @@ function run_sync_loop(gl::GitLink;
         on_push_success::Function = _do_nothing,
         on_connection_fail::Function = _do_nothing,
         on_no_action::Function = _do_nothing,
+        on_unlock::Function = _do_nothing,
         on_success::Function = _do_nothing,
     )
 
@@ -108,7 +109,7 @@ function run_sync_loop(gl::GitLink;
             # lock
             lk_force, lk_tout,
             # calbacks
-            on_iter, on_lock, before_push, on_pull_success, on_push_success,
+            on_iter, on_lock, before_push, on_pull_success, on_push_success, on_unlock,
             on_success = _run_sync_loop_success_wrapper(on_success),
             on_pull_fail = _run_sync_loop_penalty_wrapper(on_pull_fail), 
             on_push_fail = _run_sync_loop_penalty_wrapper(on_push_fail),  

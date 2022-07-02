@@ -6,7 +6,7 @@ _state!(gl::GitLink, key::Symbol, val) = setindex!(state(gl), val, key)
 
 ## ---------------------------------------------------------
 const GL_STATE_KEYS = [
-    :loop_iter
+    :loop_iter, 
 ]
     
 ## ---------------------------------------------------------
