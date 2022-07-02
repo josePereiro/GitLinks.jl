@@ -60,8 +60,7 @@ module GitLinks
     export root_dir, repo_dir, stage_dir
     export clear_wd, clear_stage
 
-    # config
-    export config, config!
+    export config, config!, state, signal, signal!
     
     export run_sync_loop
     export create_local_upstream
