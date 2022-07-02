@@ -24,7 +24,6 @@ const GL_CONFIG_KEYS = [
     :loop_wt_max
     :loop_wt_min
     :loop_wt_penalty
-    :loop_wt
 ]
 
 ## ---------------------------------------------------------
@@ -41,6 +40,5 @@ function _set_deft_config!(gl::GitLink)
     config!(gl, :loop_wt_max, 60.0)
     config!(gl, :loop_wt_min, 1.0)
     config!(gl, :loop_wt_penalty, 0.5)
-    config!(gl, :loop_wt, 1.0)
 end
 

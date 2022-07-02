@@ -6,7 +6,7 @@ function _fetch(repodir::String, url::String; verbose = false)
     isempty(rhash) && return false
 
     # do fetch
-    _run("git -C $(repodir) fetch 2>&1"; verbose, ignorestatus = true)
+    _read_bash("git -C $(repodir) fetch 2>&1"; verbose, ignorestatus = true)
 
     # check success
     # TODO: add a ceck here

@@ -1,9 +1,45 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.0"
+julia_version = "1.7.3"
 manifest_format = "2.0"
+
+[[deps.Dates]]
+deps = ["Printf"]
+uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
+[[deps.GWUtils]]
+deps = ["Logging", "LoggingExtras"]
+path = "/Users/Pereiro/.julia/dev/GWUtils"
+uuid = "772e7830-88e0-466f-82c6-af9b8962b67b"
+version = "0.1.0"
+
+[[deps.Logging]]
+uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
+
+[[deps.LoggingExtras]]
+deps = ["Dates", "Logging"]
+git-tree-sha1 = "5d4d2d9904227b8bd66386c1138cf4d5ffa826bf"
+uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
+version = "0.4.9"
+
+[[deps.Printf]]
+deps = ["Unicode"]
+uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+
+[[deps.Random]]
+deps = ["SHA", "Serialization"]
+uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[[deps.SHA]]
+uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
+[[deps.Serialization]]
+uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
 [[deps.SimpleLockFiles]]
 git-tree-sha1 = "6b42c3d3e7666cc6997c08b1854d0abab326d5c8"
 uuid = "0c975e61-21d9-4454-8de5-ff08fd2c478f"
 version = "0.4.2"
+
+[[deps.Unicode]]
+uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"

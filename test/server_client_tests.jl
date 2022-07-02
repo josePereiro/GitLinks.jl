@@ -145,7 +145,7 @@ let
         @info("Testing ping")
         ping_test = false
         onping() = (ping_test = true)
-        @test GitLinks.ping(client_gl; verbose = false, loop_tout = 17.0, onping)
+        @test GitLinks.ping(client_gl; verbose = true, loop_tout = 17.0, onping)
         @test ping_test
 
         @info("Done")

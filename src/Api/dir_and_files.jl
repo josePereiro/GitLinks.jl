@@ -26,5 +26,5 @@ const _STAGE_DIR_NAME = ".gl-stage"
 stage_dir(gl::GitLink) = joinpath(root_dir(gl), _STAGE_DIR_NAME)
 
 # Utils
-clear_wd(gl::GitLink) = _clear_wd(repo_dir(gl))
+clear_wd(gl::GitLink) = _clear_git_repo_wdir(repo_dir(gl))
 clear_stage(gl::GitLink) = (_rm(stage_dir(gl)); mkpath(stage_dir(gl)))

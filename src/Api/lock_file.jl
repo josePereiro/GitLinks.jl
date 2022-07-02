@@ -10,6 +10,6 @@ import SimpleLockFiles.lock_path
 lock_path(gl::GitLink) = lock_path(lock_file(gl))
 
 import SimpleLockFiles.lock
-lock(f::Function, gl::GitLink, lkid = rand_str(); kwargs...) = 
+lock(f::Function, gl::GitLink, lkid = _rand_token(); kwargs...) = 
     lock(f, lock_file(gl), lkid; kwargs...)
 

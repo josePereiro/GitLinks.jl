@@ -1,17 +1,17 @@
 function _loop_sleep(gl)
-    wt = config(gl, :loop_wt)
+    wt = state(gl, :loop_wt)
     wt = clamp(wt, config(gl, :loop_wt_min), config(gl, :loop_wt_max))
     wt = max(0, wt)
-    config!(gl, :loop_wt, wt)
+    _state!(gl, :loop_wt, wt)
     sleep(wt)
 end
 
 _run_sync_loop_penalty_wrapper(f::Function) = (gl::GitLink) -> begin
 
     # add_loopwt_penalty
-    wt = config(gl, :loop_wt)
+    wt = state(gl, :loop_wt)
     p = config(gl, :loop_wt_penalty)
-    config!(gl, :loop_wt, wt + p)
+    _state!(gl, :loop_wt, wt + p)
 
     f(gl)
 end
@@ -74,7 +74,7 @@ function run_sync_loop(gl::GitLink;
         # ITER CONTROL
         it += 1;
         _state!(gl, :loop_iter, it)
-        (it >= loop_iters) && return gl
+        (it > loop_iters) && return gl
         (time() - t0) > loop_tout && return gl
 
         ## ---------------------------------------------------
@@ -88,7 +88,7 @@ function run_sync_loop(gl::GitLink;
             msg = string(
                 "Loop iter: ", it, ", ", 
                 "pid: ", getpid(), ", ", 
-                "wait time: ", get_loopwt(gl)
+                "wait time: ", state(gl, :loop_wt)
             )
             @info(msg)
         end

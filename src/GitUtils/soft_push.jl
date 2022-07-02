@@ -2,7 +2,7 @@ function _up_push_dummy(gl::GitLink)
     dir = global_state_dir(gl)
     mkpath(dir) 
     dummy = joinpath(dir, ".gl-push-dummy")
-    write(dummy, rand_str())
+    write(dummy, _rand_token())
 end
 
 function _soft_push(gl::GitLink; 
@@ -38,12 +38,12 @@ function _soft_push(gl::GitLink;
         # soft push
         _up_push_dummy(gl) # Update push dummy (always push)
         _rm(joinpath(gl_repo, ".gitignore")) # avoid interference
-        _run("git -C $(gl_repo) add -A 2>&1"; verbose)
-        _run("git -C $(gl_repo) status 2>&1"; verbose)
+        _read_bash("git -C $(gl_repo) add -A 2>&1"; verbose)
+        _read_bash("git -C $(gl_repo) status 2>&1"; verbose)
         user_name = get_global_config("user.name", "GitLink")
         user_email = get_global_config("user.email", "fake@email.com")
-        _run("git -C $(gl_repo) -c user.name='$(user_name)' -c user.email='$(user_email)' commit -am '$(commit_msg)' 2>&1"; verbose)
-        _run("git -C $(gl_repo) push 2>&1"; verbose)
+        _read_bash("git -C $(gl_repo) -c user.name='$(user_name)' -c user.email='$(user_email)' commit -am '$(commit_msg)' 2>&1"; verbose)
+        _read_bash("git -C $(gl_repo) push 2>&1"; verbose)
 
         # check success
         rhash1 = _remote_HEAD_hash(url)

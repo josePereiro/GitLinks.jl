@@ -14,12 +14,12 @@ function _format_repo!(repodir::String, url::String; verbose = false)
         
         # reset remote
         _check_gitdir(repodir) || return false
-        _run("git -C $(repodir) remote remove $(_REMOTE_NAME) 2>&1"; verbose, ignorestatus)
-        _run("git -C $(repodir) remote add $(_REMOTE_NAME) $(url) 2>&1"; verbose, ignorestatus)
+        _read_bash("git -C $(repodir) remote remove $(_REMOTE_NAME) 2>&1"; verbose, ignorestatus)
+        _read_bash("git -C $(repodir) remote add $(_REMOTE_NAME) $(url) 2>&1"; verbose, ignorestatus)
 
         cbranch = _curr_branch(repodir)
-        _run("git -C $(repodir) branch --unset-upstream 2>&1"; verbose, ignorestatus)
-        _run("git -C $(repodir) branch --set-upstream-to $(_REMOTE_NAME) $(cbranch) 2>&1"; verbose, ignorestatus)
+        _read_bash("git -C $(repodir) branch --unset-upstream 2>&1"; verbose, ignorestatus)
+        _read_bash("git -C $(repodir) branch --set-upstream-to $(_REMOTE_NAME) $(cbranch) 2>&1"; verbose, ignorestatus)
 
         curr_url = _remote_url(repodir)
     end

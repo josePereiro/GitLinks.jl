@@ -2,13 +2,10 @@ module GitLinks
 
     import SimpleLockFiles
     import SimpleLockFiles: acquire_lock
+    using GWUtils
+    using Random
 
     include("Types/GitLink.jl")
-
-    include("Utils/rand_str.jl")
-    include("Utils/toml_utils.jl")
-    include("Utils/runcmd.jl")
-    include("Utils/fileutils.jl")
 
     include("GitUtils/check_gitdir.jl")
     include("GitUtils/repo_format.jl")

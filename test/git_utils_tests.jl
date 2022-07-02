@@ -54,7 +54,7 @@ let
         for it in 1:10
             # create 'big' files
             dummy = joinpath(local_repo, "dummy$it")
-            write(dummy, GitLinks.rand_str(1000))
+            write(dummy, GitLinks._rand_token(1000))
             push_ok = GitLinks._soft_push(gl; verbose)
             @test push_ok
         end
@@ -81,7 +81,7 @@ let
 
         # upsize4 = GitLinks._foldersize(local_root)
         # upsize5 = GitLinks._foldersize(upstream_repo)
-        # GitLinks._run("git -C $(upstream_repo) gc")
+        # GitLinks._read_bash("git -C $(upstream_repo) gc")
         # upsize6 = GitLinks._foldersize(upstream_repo)
         # @test upsize2 < upsize1
         # @show upsize0 upsize1 upsize2 upsize3 upsize4 upsize5 upsize6
