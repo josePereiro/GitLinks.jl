@@ -32,19 +32,19 @@ let
         
         # hard pull
         @test !isdir(local_root)
-        pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # clone
+        pull_ok = GitLinks._hard_pull(gl; verbose, wdir_clear = true) # clone
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
         
-        pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # pull
+        pull_ok = GitLinks._hard_pull(gl; verbose, wdir_clear = true) # pull
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
         
         GitLinks._rm(joinpath(local_repo, ".git")) # break repo
         @test !GitLinks._check_gitdir(local_root)
-        pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # must recover
+        pull_ok = GitLinks._hard_pull(gl; verbose, wdir_clear = true) # must recover
         @test pull_ok
         @test isdir(local_root)
         @test isdir(local_repo_git)
@@ -74,7 +74,7 @@ let
         # @test nuke_ok
         
         # GitLinks._rm(local_root)
-        # pull_ok = GitLinks._hard_pull(gl; verbose, clearwd = true) # clone again
+        # pull_ok = GitLinks._hard_pull(gl; verbose, wdir_clear = true) # clone again
         # @test pull_ok
         # @test isdir(local_root)
         # @test isdir(local_repo_git)

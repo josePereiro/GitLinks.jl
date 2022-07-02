@@ -5,8 +5,18 @@ function _up_push_dummy(gl::GitLink)
     write(dummy, rand_str())
 end
 
-function _soft_push(gl::GitLink; verbose = false, commit_msg = "Up at $(time())", tries = 1)
-    for t in 1:max(tries, 1)
+function _soft_push(gl::GitLink; 
+        verbose = false, 
+        commit_msg = "Up at $(time())", 
+        tries = 1
+    )
+
+    it = 0
+    while true
+
+        it += 1
+        (it > tries) && return false
+
         # repo info
         gl_repo = repo_dir(gl)
         url = remote_url(gl)

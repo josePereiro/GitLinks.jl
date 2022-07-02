@@ -2,11 +2,15 @@
 
 function _hard_pull(gl::GitLink; 
         verbose = false, 
-        clearwd = true, 
+        wdir_clear = true, 
         tries = 1
     )
 
-    for t in 1:max(tries, 1)
+    it = 0
+    while true
+
+        it += 1
+        (it > tries) && return false
 
         ignorestatus = true
         gl_repo = repo_dir(gl)
@@ -21,7 +25,7 @@ function _hard_pull(gl::GitLink;
         _format_repo!(gl_repo, url; verbose)
 
         # clear wd
-        clearwd && _clear_wd(gl_repo)
+        wdir_clear && _clear_wd(gl_repo)
 
         if _check_gitdir(gl_repo)
             # if all ok 

@@ -15,10 +15,7 @@ let
 
         ## ------------------------------------------------------------
         # Remote
-        url, upstream_repo = GitLinks.create_local_upstream(;
-            # branch_name = "master", # This will force a repo formatting
-            verbose
-        )
+        url, upstream_repo = GitLinks.create_local_upstream(; verbose)
 
         ## ------------------------------------------------------------
         # Server
@@ -60,31 +57,31 @@ let
         @async begin
             sleep(5.0) # To retard first iter
             @info("run_sync_loop(client_gl)")
-            GitLinks.run_sync_loop(client_gl; niters = 500, verbose, tout = 60.0)
+            GitLinks.run_sync_loop(client_gl; loop_iters = 500, verbose, lk_tout = 60.0)
         end
         
         @info("waitfor_push")
         GitLinks.up_push_reg!(client_gl)
-        @test GitLinks.waitfor_push(client_gl; wt = 0.5, tout = 15.0)
+        @test GitLinks.waitfor_push(client_gl; wt = 0.5, loop_tout = 15.0)
         @test isfile(staged_dummy)
         @test GitLinks._is_stage_up_to_day(client_gl)
 
         @async begin
             sleep(5.0) # To retard first iter
             @info("run_sync_loop(server_gl)")
-            @async GitLinks.run_sync_loop(server_gl; niters = 500, verbose, tout = 60.0)
+            @async GitLinks.run_sync_loop(server_gl; loop_iters = 500, verbose, loop_tout = 60.0)
         end
 
         # check target arrived
         @info("waitfor_pull")
         GitLinks.up_pull_reg!(server_gl)
-        @test GitLinks.waitfor_pull(server_gl; wt = 0.5, tout = 15.0)
+        @test GitLinks.waitfor_pull(server_gl; wt = 0.5, loop_tout = 15.0)
         @test isfile(target_dummy)
 
         # Client
         # test readwdir
         readwdir_test = false
-        GitLinks.readwdir(server_gl; tout = 8.0) do wdir
+        GitLinks.readwdir(server_gl; lk_tout = 8.0) do wdir
             println("\n", "-"^60)
             @info("Reading wdir")
             @test wdir == GitLinks.repo_dir(server_gl)
@@ -96,8 +93,8 @@ let
 
         # test upload_wdir
         upload_wdir_test = false
-        clearwd = false
-        GitLinks.upload_wdir(client_gl; tout = 8.0, clearwd) do wdir
+        wdir_clear = false
+        GitLinks.upload_wdir(client_gl; lk_tout = 8.0, wdir_clear) do wdir
             println("\n", "-"^60)
             @info("Writing wdir")
             @test wdir == GitLinks.repo_dir(client_gl)
@@ -109,7 +106,7 @@ let
         @test !isfile(target_dummy)
 
         # clear
-        GitLinks._set_stop_signal!(client_gl, true)
+        GitLinks.signal!(client_gl, :loop_stop, true)
         GitLinks._rm(client_root)
 
         @info("Testing upload")
@@ -124,7 +121,7 @@ let
         @test !isfile(staged_dummy)
         @test !isfile(target_dummy)
         upload_test = false
-        @test GitLinks.upload_stage(client_gl; verbose, tout = 10.0) do sdir
+        @test GitLinks.upload_stage(client_gl; verbose, lk_tout = 10.0) do sdir
             println("\n", "-"^60)
             @info("upload")
             @test sdir == GitLinks.stage_dir(client_gl)
@@ -148,16 +145,16 @@ let
         @info("Testing ping")
         ping_test = false
         onping() = (ping_test = true)
-        @test GitLinks.ping(client_gl; verbose = false, tout = 17.0, onping)
+        @test GitLinks.ping(client_gl; verbose = false, loop_tout = 17.0, onping)
         @test ping_test
 
         @info("Done")
         
     finally
         # kill loops
-        @info("_set_stop_signal!")
-        !isnothing(client_gl) && GitLinks._set_stop_signal!(client_gl, true)
-        !isnothing(server_gl) && GitLinks._set_stop_signal!(server_gl, true)
+        @info("set_stop_signal!")
+        !isnothing(client_gl) && GitLinks.signal!(client_gl, :loop_stop, true)
+        !isnothing(server_gl) && GitLinks.signal!(server_gl, :loop_stop, true)
 
         # clear
         GitLinks._rm(server_root)

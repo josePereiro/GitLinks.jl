@@ -8,6 +8,7 @@ module GitLinks
     include("Utils/rand_str.jl")
     include("Utils/toml_utils.jl")
     include("Utils/runcmd.jl")
+    include("Utils/fileutils.jl")
 
     include("GitUtils/check_gitdir.jl")
     include("GitUtils/repo_format.jl")
@@ -27,43 +28,46 @@ module GitLinks
     include("GitUtils/soft_push.jl")
     include("GitUtils/url_from_file.jl")
 
-    include("TreeStruct/dir_and_files.jl")
-    include("TreeStruct/utils.jl")
-
-    include("Lock_system/lock_file.jl")
-
     include("DevLand/create_local_upstream.jl")
     include("DevLand/monkey_delete.jl")
 
-    include("Server/instantiate.jl")
-    include("Server/loop_frec.jl")
-    include("Server/is_pull_required.jl")
-    include("Server/is_push_required.jl")
+    include("Server/global_signals.jl")
     include("Server/stage_sync.jl")
-    include("Server/signals.jl")
-    include("Server/run_sync_loop.jl")
-    include("Server/sync_link.jl")
     include("Server/tokens.jl")
     
-    include("Client/readwdir.jl")
-    include("Client/download.jl")
-    include("Client/upload_wdir.jl")
-    include("Client/events.jl")
-    include("Client/stage.jl")
-    include("Client/upload_stage.jl")
-    include("Client/ping.jl")
-    include("Client/git_status.jl")
+    include("Api/config.jl")
+    include("Api/dir_and_files.jl")
+    include("Api/download.jl")
+    include("Api/events.jl")
+    include("Api/git_status.jl")
+    include("Api/instantiate.jl")
+    include("Api/is_pull_required.jl")
+    include("Api/is_push_required.jl")
+    include("Api/is_uptoday.jl")
+    include("Api/lock_file.jl")
+    include("Api/ping.jl")
+    include("Api/readwdir.jl")
+    include("Api/run_sync_loop.jl")
+    include("Api/signal.jl")
+    include("Api/stage.jl")
+    include("Api/state.jl")
+    include("Api/sync_link.jl")
+    include("Api/upload_stage.jl")
+    include("Api/upload_wdir.jl")
 
-    export GitLink
-    export instantiate, stage, readwdir, download, upload_stage, upload_wdir
+    export GitLink, set!
+    export instantiate, stage, readwdir, download, upload_stage, upload_wdir, sync_link
     export root_dir, repo_dir, stage_dir
-    export clear_wd, clear_stage, has_connection
+    export clear_wd, clear_stage
+
+    # config
+    export config, config!
     
     export run_sync_loop
     export create_local_upstream
     export waitfor_pull, waitfor_stage, waitfor_push
     export if_pull, if_stage, if_push
     export is_push_required, is_pull_required
-    export ping, git_status
+    export ping, git_status, is_uptoday, has_connection
 
 end

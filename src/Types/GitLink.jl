@@ -5,8 +5,14 @@ struct GitLink
 
     # System data
     dat::Dict{Any, Any}
-
-    GitLink(root_dir, remote_url) = new(string(root_dir), string(remote_url), Dict{Any, Any}())
+    
+    function GitLink(root_dir, remote_url)
+        gl = new(string(root_dir), string(remote_url), Dict{Any, Any}())
+        _set_deft_config!(gl)
+        _init_state!(gl)
+        _init_signal!(gl)
+        return gl
+    end
     GitLink(;root_dir, remote_url) = GitLink(root_dir, remote_url)
 end
 
@@ -32,6 +38,3 @@ set!(gl::GitLink, key, val) = (gl.dat[key] = val)
 set!(f::Function, gl::GitLink, key) = (gl.dat[key] = f())
 
 remote_url(gl::GitLink) = gl.remote_url
-
-# Utils
-has_connection(gl::GitLink) = !isempty(_remote_HEAD_hash(remote_url(gl)))
