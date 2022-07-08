@@ -28,7 +28,7 @@ module GitLinks
     include("DevLand/create_local_upstream.jl")
     include("DevLand/monkey_delete.jl")
 
-    include("Server/global_signals.jl")
+    include("Server/external_signals.jl")
     include("Server/stage_sync.jl")
     include("Server/tokens.jl")
     
@@ -45,6 +45,7 @@ module GitLinks
     include("Api/ping.jl")
     include("Api/readwdir.jl")
     include("Api/run_sync_loop.jl")
+    include("Api/send_force_push_signal.jl")
     include("Api/signal.jl")
     include("Api/stage.jl")
     include("Api/state.jl")
@@ -54,6 +55,7 @@ module GitLinks
 
     export GitLink, set!
     export instantiate, stage, readwdir, download, upload_stage, upload_wdir, sync_link
+    export send_force_push_signal
     export root_dir, repo_dir, stage_dir
     export clear_wd, clear_stage
 

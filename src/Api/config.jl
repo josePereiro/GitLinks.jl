@@ -29,7 +29,7 @@ const GL_CONFIG_KEYS = [
 ## ---------------------------------------------------------
 function _set_deft_config!(gl::GitLink)
     config!(gl, :verbose, false)
-    config!(gl, :wdir_clear, false)
+    config!(gl, :wdir_clear, true)
     config!(gl, :loop_iters, Inf)
     config!(gl, :loop_tout, Inf)
     config!(gl, :sync_tries, 3)

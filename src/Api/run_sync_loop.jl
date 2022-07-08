@@ -20,7 +20,7 @@ _run_sync_loop_success_wrapper(f::Function) = (gl::GitLink) -> begin
     
     # reset_loopwt
     min_wt = config(gl, :loop_wt_min)
-    config!(gl, :loop_wt, min_wt)
+    _state!(gl, :loop_wt, min_wt)
 
     f(gl)
 end
@@ -84,7 +84,6 @@ function run_sync_loop(gl::GitLink;
         ## ---------------------------------------------------
         # INFO
         if verbose
-            println("-"^60)
             msg = string(
                 "Loop iter: ", it, ", ", 
                 "pid: ", getpid(), ", ", 
@@ -94,12 +93,12 @@ function run_sync_loop(gl::GitLink;
         end
 
         ## ---------------------------------------------------
-        # HANDLE PING
-        ping_flag = _do_ping(gl)
+        # HANDLE EXTERNAL SIGNALS
+        ext_force_push = _is_push_ext_signal_on(gl)
 
         ## ---------------------------------------------------
-        # FORCE
-        force = ping_flag
+        # FORCE FLAG
+        force = ext_force_push
         
         ## ---------------------------------------------------
         # SYNC LINK
