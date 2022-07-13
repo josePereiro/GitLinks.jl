@@ -4,9 +4,10 @@ authors = ["josePereiro <jose.pereiro.lab@gmail.com> and contributors"]
 version = "0.9.0"
 
 [deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 GWUtils = "772e7830-88e0-466f-82c6-af9b8962b67b"
-SimpleLockFiles = "0c975e61-21d9-4454-8de5-ff08fd2c478f"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SimpleLockFiles = "0c975e61-21d9-4454-8de5-ff08fd2c478f"
 
 [compat]
 julia = "1.6"

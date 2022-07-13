@@ -84,6 +84,7 @@ function run_sync_loop(gl::GitLink;
         ## ---------------------------------------------------
         # INFO
         if verbose
+            @info("===== GitLink =====")
             msg = string(
                 "Loop iter: ", it, ", ", 
                 "pid: ", getpid(), ", ", 

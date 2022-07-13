@@ -7,26 +7,27 @@ _push_ext_signal_file(gl::GitLink) =
 function _write_push_ext_signal(gl::GitLink, vtime)
     fn = _push_ext_signal_file(gl)
     _mkdir(fn)
-    extime = time() + vtime
+    vtime = floor(Int64, vtime)
+    extime = now() + Second(vtime)
     write(fn, string(extime))
     return extime
 end
 
 function _read_push_ext_signal(gl::GitLink)
     fn = _push_ext_signal_file(gl)
-    !isfile(fn) && return -1.0
+    !isfile(fn) && return DateTime(1,1,1)
     txt = read(fn, String)
-    extime = tryparse(Float64, txt)
-    extime = isnothing(extime) ? -1.0 : extime
+    extime = tryparse(DateTime, txt)
+    extime = isnothing(extime) ? DateTime(1,1,1) : extime
     return extime
 end
 
 function _is_push_ext_signal_on(gl::GitLink) 
     curr_signal = _read_push_ext_signal(gl)
-    last_signal = get!(gl, :last_push_ext, -1.0)
+    last_signal = get!(gl, :last_push_ext, DateTime(1,1,1))
     set!(gl, :last_push_ext, curr_signal)
     is_new_signal = last_signal != curr_signal
-    is_valid = curr_signal > time() 
+    is_valid = curr_signal > now()
     return is_new_signal || is_valid
 end
 

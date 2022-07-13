@@ -4,6 +4,7 @@ module GitLinks
     import SimpleLockFiles: acquire_lock
     using GWUtils
     using Random
+    using Dates
 
     include("Types/GitLink.jl")
 
@@ -63,6 +64,7 @@ module GitLinks
     
     export run_sync_loop
     export create_local_upstream
+    export up_stage_reg!, up_pull_reg!, up_push_reg!
     export waitfor_pull, waitfor_stage, waitfor_push
     export if_pull, if_stage, if_push
     export is_push_required, is_pull_required
