@@ -17,6 +17,7 @@ module GitLinks
     include("GitUtils/curr_branch.jl")
     include("GitUtils/curr_remotes.jl")
     include("GitUtils/fetch.jl")
+    include("GitUtils/commit_count.jl")
     include("GitUtils/hard_pull.jl")
     include("GitUtils/is_up_to_day.jl")
     include("GitUtils/list_commits.jl")

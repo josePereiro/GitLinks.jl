@@ -1,6 +1,6 @@
 function _fetch(repodir::String, url::String; verbose = false)
     
-    !_check_gitdir(repodir) && return false
+    _check_gitdir(repodir) || return false
     
     rhash = _remote_HEAD_hash(url)
     isempty(rhash) && return false

@@ -12,17 +12,17 @@ end
 
 ## ---------------------------------------------------------
 const GL_CONFIG_KEYS = [
-    :verbose
-    :wdir_clear
-    :loop_iters
-    :loop_tout
-    :sync_tries
-    :stage_clear
-    :lk_force
-    :force_sync
-    :lk_tout
-    :loop_wt_max
-    :loop_wt_min
+    :verbose,
+    :wdir_clear,
+    :loop_iters,
+    :loop_tout,
+    :sync_tries,
+    :stage_clear,
+    :lk_force,
+    :force_sync,
+    :lk_tout,
+    :loop_wt_max,
+    :loop_wt_min,
     :loop_wt_penalty
 ]
 

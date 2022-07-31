@@ -55,6 +55,7 @@ function _soft_push(gl::GitLink;
 
         # Aknowlage successful pull
         _set_push_token(gl) 
+        _state!(gl, :last_push, now())
 
         return true
     end

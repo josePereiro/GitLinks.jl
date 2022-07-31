@@ -49,6 +49,7 @@ function _hard_pull(gl::GitLink;
 
         # Aknowlage successful pull
         _set_pull_token(gl)
+        _state!(gl, :last_pull, now())
         
         return true
     end

@@ -24,11 +24,14 @@ end
 
 function _is_push_ext_signal_on(gl::GitLink) 
     curr_signal = _read_push_ext_signal(gl)
-    last_signal = get!(gl, :last_push_ext, DateTime(1,1,1))
-    set!(gl, :last_push_ext, curr_signal)
-    is_new_signal = last_signal != curr_signal
+    # last_push = state(gl, :last_push)
+    # is_new_signal = last_push != curr_signal
+    
+    # TODO: Do it with commit count
+    
     is_valid = curr_signal > now()
-    return is_new_signal || is_valid
+    # return is_new_signal || is_valid
+    return is_valid
 end
 
 function _send_force_push_signal(gl::GitLink, tout; upload_kwargs...)
