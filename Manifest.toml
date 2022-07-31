@@ -9,9 +9,9 @@ uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.GWUtils]]
 deps = ["Dates", "Logging", "LoggingExtras", "TOML"]
-git-tree-sha1 = "9ed2f81513fea7ede440c70dbc991ebce58092c1"
+git-tree-sha1 = "46b9d957930d4ac5f64023bf88f2fe5c18d68373"
 uuid = "772e7830-88e0-466f-82c6-af9b8962b67b"
-version = "0.1.1"
+version = "0.1.2"
 
 [[deps.Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
