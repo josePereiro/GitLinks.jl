@@ -96,10 +96,12 @@ function run_sync_loop(gl::GitLink;
         ## ---------------------------------------------------
         # HANDLE EXTERNAL SIGNALS
         ext_force_push = _is_push_ext_signal_on(gl)
-
+        ext_force_push && verbose && @info("!!!! Push signal on !!!!")
+        
         ## ---------------------------------------------------
         # FORCE FLAG
         force = ext_force_push
+        force && verbose && @info("!!!! Forcing !!!!")
         
         ## ---------------------------------------------------
         # SYNC LINK

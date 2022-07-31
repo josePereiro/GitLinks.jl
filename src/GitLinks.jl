@@ -33,6 +33,7 @@ module GitLinks
     include("Server/external_signals.jl")
     include("Server/stage_sync.jl")
     include("Server/tokens.jl")
+    include("Server/utils.jl")
     
     include("Api/config.jl")
     include("Api/dir_and_files.jl")

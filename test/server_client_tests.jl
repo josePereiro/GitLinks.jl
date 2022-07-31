@@ -1,4 +1,5 @@
 let
+    # globals
     verbose = false
     upstream_repo = ""
     server_root = ""
@@ -57,7 +58,7 @@ let
         @async begin
             sleep(5.0) # To retard first iter
             @info("run_sync_loop(client_gl)")
-            GitLinks.run_sync_loop(client_gl; loop_iters = 500, verbose, lk_tout = 60.0)
+            GitLinks.run_sync_loop(client_gl; loop_iters = 500, verbose, lk_tout = 360.0)
         end
         
         @info("waitfor_push")
@@ -69,10 +70,11 @@ let
         @async begin
             sleep(5.0) # To retard first iter
             @info("run_sync_loop(server_gl)")
-            @async GitLinks.run_sync_loop(server_gl; loop_iters = 500, verbose, loop_tout = 60.0)
+            @async GitLinks.run_sync_loop(server_gl; loop_iters = 500, verbose, loop_tout = 360.0)
         end
 
         # check target arrived
+        ## ------------------------------------------------------------
         @info("waitfor_pull")
         GitLinks.up_pull_reg!(server_gl)
         @test GitLinks.waitfor_pull(server_gl; wt = 0.5, loop_tout = 15.0)
@@ -109,6 +111,8 @@ let
         GitLinks.signal!(client_gl, :loop_stop, true)
         GitLinks._rm(client_root)
 
+        ## ------------------------------------------------------------
+        println("\n", "-"^60)
         @info("Testing upload")
         # Set other client
         client_root = tempname()
@@ -142,10 +146,17 @@ let
         end
         @test isfile(target_dummy)
 
+        ## ------------------------------------------------------------
+        println("\n", "-"^60)
         @info("Testing ping")
         ping_test = false
         onping() = (ping_test = true)
-        @test GitLinks.ping(client_gl; verbose = true, loop_tout = 17.0, onping)
+        @test GitLinks.ping(client_gl; 
+            verbose = true, npings = 3, 
+            offset = 10,
+            self_ping = false, tout = 60.0, 
+            onping
+        )
         @test ping_test
 
         @info("Done")
@@ -160,6 +171,5 @@ let
         GitLinks._rm(server_root)
         GitLinks._rm(client_root)
         GitLinks._rm(upstream_repo)
-
     end
 end

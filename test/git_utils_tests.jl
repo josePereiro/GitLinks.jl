@@ -1,5 +1,5 @@
 let
-    verbose = true
+    verbose = false
     upstream_repo = ""
     local_root = ""
 

@@ -93,7 +93,14 @@ function sync_link(gl::GitLink;
             end
             
             ## ---------------------------------------------------
-            verbose && @info("Doing", pull_flag, push_flag)
+            if verbose 
+                @info("--------------------------")
+                @info("---- Action required! ----")
+                msg = string(
+                    "pull: ", pull_flag, ", push: ",push_flag
+                )
+                @info(msg)
+            end
 
             ## ---------------------------------------------------
             # HARD PULL (Loop)

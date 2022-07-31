@@ -1,15 +1,16 @@
 function ping(gl::GitLink; 
-        tout = 30.0,
+        npings = 10,
+        offset = 2,
         verbose = config(gl, :verbose),
         self_ping = false,
+        tout = 360.0, # max 5 min
         onping::Function = () -> nothing
     )
 
-    tout = min(tout, 5 * 60.0) # max 5 min
-
     # send signal
-    verbose && @info("Sending ping signal")
-    ok_sync = _send_force_push_signal(gl, tout; verbose = false)
+    verbose && @info("Sending ping signal, npings: $(npings)")
+    ncommits = max(npings, npings + offset)
+    ok_sync = _send_force_push_signal(gl, ncommits; verbose = false)
     !ok_sync && (verbose && @error("Sync failed"); return false)
     verbose && @info("Ping signal sended")
     
@@ -23,6 +24,7 @@ function ping(gl::GitLink;
     acc_t = 0.0
     time_ = Inf
     fb_count_ = 0
+    _wt = 0.5
 
     try
 
@@ -31,12 +33,10 @@ function ping(gl::GitLink;
             fb_count_ += 1
 
             # time out
-            if (time() - init_t) > tout 
-                break
-            end
+            ((time() - init_t) > tout) && break
+            (ping_count >= npings) && break
 
             left_ = max(round(tout - (time() - init_t); sigdigits = 3), 0.0)
-            
             
             # hashes
             chash = _HEAD_hash(gl)
@@ -72,7 +72,7 @@ function ping(gl::GitLink;
 
                 if verbose 
                     msg = string(
-                        "  Ping ", ping_count, " succeeded, ", 
+                        "  Ping ", ping_count, "/", npings, ", " ,
                         "time: ", time_, "(s), ", 
                         "time left: ", left_, "(s)"
                     )
@@ -80,13 +80,14 @@ function ping(gl::GitLink;
                 end
 
                 onping()
+
                 rhash0 = rhash
                 fb_count_ = 0
+                
             else
-                if verbose && iszero(rem(fb_count_, 10))
+                if verbose && iszero(rem(fb_count_, floor(Int, 10.0 / _wt)))
                     msg = string(
                         "Waiting, ", 
-                        "remote hash: ", first(rhash, 7), ", ",
                         "time left: ", left_, "(s)"
                     )
                     @info(msg)
@@ -95,7 +96,7 @@ function ping(gl::GitLink;
             end
             
             
-            sleep(0.5)
+            sleep(_wt)
         
         end # while true
         
